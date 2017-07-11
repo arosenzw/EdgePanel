@@ -1,2 +1,2 @@
-# edge_app
+# EdgeScreen
 Preliminary code for the Edge app 
