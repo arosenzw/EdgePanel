@@ -1,24 +1,22 @@
 package com.etrade.edgepanel.edgedisplay;
 
 import com.etrade.edgepanel.R;
-import com.etrade.edgepanel.data.Stock;
-import com.etrade.edgepanel.data.WatchListManager;
-import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
-import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
+        import com.etrade.edgepanel.data.Stock;
+        import com.etrade.edgepanel.data.WatchListManager;
+        import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
+        import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
 
-import android.app.PendingIntent;
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
+        import android.content.Context;
 import android.util.Log;
-import android.widget.RemoteViews;
-import android.widget.Toast;
+        import android.widget.RemoteViews;
 
 public class EdgeProvider extends SlookCocktailProvider {
-    private static final String DELETE = "com.etrade.edgepanel.action.DELETE_STOCK";
+	private static final String DELETE = "com.etrade.edgepanel.action.DELETE_STOCK";
     private static final String ADD = "com.etrade.edgepanel.action.ADD_STOCK";
     private static final WatchListManager watchListManager = new WatchListManager();
     private static final int MAIN_LAYOUT = R.layout.main_view;
+
 
     @Override
     public void onUpdate(Context context, SlookCocktailManager cocktailManager, int[] cocktailIds) {
@@ -31,24 +29,61 @@ public class EdgeProvider extends SlookCocktailProvider {
      * @param context
      */
     private void updateEdge(Context context) {
+
         SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, EdgeProvider.class));
         RemoteViews rv = new RemoteViews(context.getPackageName(), MAIN_LAYOUT);
 
-        // Add all stocks in the current watch list
-        Stock[] stocks = watchListManager.getStocksAsArray();
+        Stock s = new Stock("AAPL", "Apple", 151.99, 2.56, 1.07);
+        Stock s1 = new Stock("FB", "Facebook", 151.99, -2.56, -1.07);
+        Stock s2 = new Stock("MSFT", "Microsoft", 151.99, 2.56, 1.07);
+        Stock s3 = new Stock("NFLX", "Netflix", 151.99, 0.00, 0.00);
+
+        Stock[] stocks = {s, s1, s2, s3};
+
+        // Add stocks to Remote View
         for (int i = 0; i < stocks.length; i++) {
-            Log.d("Stock update", "New stock added: " + stocks[i].getName());
+            Log.d("Stock update", "New stock added: " + stocks[i].getTicker());
             //Create new remote view using the specified layout file
             RemoteViews listEntryLayout = new RemoteViews(context.getPackageName(), R.layout.list_entry);
-            //Set the text of the TextView inside the above specified layout file
-            listEntryLayout.setTextViewText(R.id.stock_text, stocks[i].getName());
-            listEntryLayout.setTextViewText(R.id.stock_filler, Integer.toString(i));
+            String change = "";
+            String percentage = "%(";
+
+            // Set background color to green, red, or gray
+
+            int color = 0;
+            if(stocks[i].getPercent_change() > 0.00) {
+                color = android.R.color.holo_green_light;
+                change += "+";
+            } else if(stocks[i].getPercent_change() < 0.00) {
+                color = android.R.color.holo_red_light;
+            } else {
+                color = android.R.color.darker_gray;
+            }
+
+            listEntryLayout.setInt(R.id.stock_ticker, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_name, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_price, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_change, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_perc, "setBackgroundResource", color);
+
+            // Set TextView to appropriate stock text
+
+            listEntryLayout.setTextViewText(R.id.stock_ticker, stocks[i].getTicker());
+            listEntryLayout.setTextViewText(R.id.stock_name, stocks[i].getName());
+            listEntryLayout.setTextViewText(R.id.stock_price, Double.toString(stocks[i].getValue()));
+            change += String.format("%.2f", stocks[i].getDollar_change());
+            listEntryLayout.setTextViewText(R.id.stock_change, change);
+            percentage += String.format("%.2f", stocks[i].getPercent_change());
+            percentage += ")";
+            listEntryLayout.setTextViewText(R.id.stock_perc, percentage);
+
             //Add the new remote view to the parent/containing Layout object
             rv.addView(R.id.main_layout, listEntryLayout);
+
         }
 
-        // Set button functionalities
+	// Set button functionalities
         rv.setOnClickPendingIntent(R.id.del_button, getPendingSelfIntent(context, DELETE));
         rv.setOnClickPendingIntent(R.id.add_button, getPendingSelfIntent(context, ADD));
 
@@ -59,8 +94,7 @@ public class EdgeProvider extends SlookCocktailProvider {
             }
         }
     }
-
-    /**
+ /**
      * Gets a {@code PendingIntent} object that is designed to target this class (self)
      *
      * @param context
@@ -99,5 +133,4 @@ public class EdgeProvider extends SlookCocktailProvider {
                 break;
         }
     }
-
 }

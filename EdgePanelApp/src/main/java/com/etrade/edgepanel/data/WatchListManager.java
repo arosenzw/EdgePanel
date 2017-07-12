@@ -7,17 +7,7 @@ import java.util.ArrayList;
  */
 
 public class WatchListManager {
-    private Stock testStock1;
-    private Stock testStock2;
     private ArrayList<Stock> stocks;
-
-    public WatchListManager() {
-        testStock1 = new Stock("Apple", 5);
-        testStock2 = new Stock("Microsoft", 10);
-        stocks = new ArrayList<>();
-        stocks.add(testStock1);
-        stocks.add(testStock2);
-    }
 
     public Stock[] getStocksAsArray() {
         return (Stock[]) stocks.toArray(new Stock[stocks.size()]);
@@ -31,8 +21,8 @@ public class WatchListManager {
         stocks.remove(0); //keep microsoft
     }
 
-    public void addStock() {
-        stocks.add(new Stock("E-Trade", 25));
+    public void insert_stock(Stock s) {
+        stocks.add(s);
     }
 
 }
