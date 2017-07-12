@@ -6,10 +6,13 @@ import com.etrade.edgepanel.R;
         import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
         import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
 
+import android.app.PendingIntent;
 import android.content.ComponentName;
         import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
         import android.widget.RemoteViews;
+import android.widget.Toast;
 
 public class EdgeProvider extends SlookCocktailProvider {
 	private static final String DELETE = "com.etrade.edgepanel.action.DELETE_STOCK";
@@ -29,7 +32,6 @@ public class EdgeProvider extends SlookCocktailProvider {
      * @param context
      */
     private void updateEdge(Context context) {
-
         SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, EdgeProvider.class));
         RemoteViews rv = new RemoteViews(context.getPackageName(), MAIN_LAYOUT);
@@ -68,7 +70,6 @@ public class EdgeProvider extends SlookCocktailProvider {
             listEntryLayout.setInt(R.id.stock_perc, "setBackgroundResource", color);
 
             // Set TextView to appropriate stock text
-
             listEntryLayout.setTextViewText(R.id.stock_ticker, stocks[i].getTicker());
             listEntryLayout.setTextViewText(R.id.stock_name, stocks[i].getName());
             listEntryLayout.setTextViewText(R.id.stock_price, Double.toString(stocks[i].getValue()));
@@ -83,9 +84,9 @@ public class EdgeProvider extends SlookCocktailProvider {
 
         }
 
-	// Set button functionalities
-        rv.setOnClickPendingIntent(R.id.del_button, getPendingSelfIntent(context, DELETE));
-        rv.setOnClickPendingIntent(R.id.add_button, getPendingSelfIntent(context, ADD));
+	    // Set button functionalities
+//        rv.setOnClickPendingIntent(R.id.del_button, getPendingSelfIntent(context, DELETE));
+//        rv.setOnClickPendingIntent(R.id.add_button, getPendingSelfIntent(context, ADD));
 
         // Standard updating
         if (cocktailIds != null) {
@@ -94,7 +95,8 @@ public class EdgeProvider extends SlookCocktailProvider {
             }
         }
     }
- /**
+    
+    /**
      * Gets a {@code PendingIntent} object that is designed to target this class (self)
      *
      * @param context
@@ -121,12 +123,12 @@ public class EdgeProvider extends SlookCocktailProvider {
         switch(intent.getAction()) {
             case DELETE:
                 Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show();
-                watchListManager.deleteStock();
+//                watchListManager.deleteStock();
                 updateEdge(context);
                 break;
             case ADD:
                 Toast.makeText(context, "ADD", Toast.LENGTH_SHORT).show();
-                watchListManager.addStock();
+                //watchListManager.addStock()
                 updateEdge(context);
                 break;
             default:
