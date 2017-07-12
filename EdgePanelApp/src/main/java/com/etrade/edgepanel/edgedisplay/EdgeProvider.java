@@ -60,12 +60,25 @@ public class EdgeProvider extends SlookCocktailProvider {
         }
     }
 
+    /**
+     * Gets a {@code PendingIntent} object that is designed to target this class (self)
+     *
+     * @param context
+     * @param action
+     * @return
+     */
     protected PendingIntent getPendingSelfIntent(Context context, String action) {
         Intent intent = new Intent(context, EdgeProvider.class);
         intent.setAction(action);
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    /**
+     * Filter broadcasts for a specific button's functionality
+     *
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
