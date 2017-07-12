@@ -27,4 +27,12 @@ public class WatchListManager {
         return stocks;
     }
 
+    public void deleteStock() {
+        stocks.remove(0); //keep microsoft
+    }
+
+    public void addStock() {
+        stocks.add(new Stock("E-Trade", 25));
+    }
+
 }

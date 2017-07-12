@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.etrade.edgepanel.edgedisplay.CocktailProvider" >
+        <receiver android:name="com.etrade.edgepanel.edgedisplay.EdgeProvider" >
             <intent-filter>
                 <action android:name="com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" />
             </intent-filter>
