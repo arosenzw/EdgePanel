@@ -39,8 +39,11 @@ public class EdgeProvider extends SlookCocktailProvider {
         Stock s1 = new Stock("FB", "Facebook", 151.99, -2.56, -1.07);
         Stock s2 = new Stock("MSFT", "Microsoft", 151.99, 2.56, 1.07);
         Stock s3 = new Stock("NFLX", "Netflix", 151.99, 0.00, 0.00);
+        Stock s4 = new Stock("GOOGL", "Alphabet", 151.99, 5.00, 2.00);
+        Stock s5 = new Stock("CSCO", "Cisco", 100.00, -2.00, -5.00);
+        Stock s6 = new Stock("TSLA", "Tesla", 500.00, 3.15, 2.05);
 
-        Stock[] stocks = {s, s1, s2, s3};
+        Stock[] stocks = {s, s1, s2, s3, s4, s5, s6};
 
         // Add stocks to Remote View
         for (int i = 0; i < stocks.length; i++) {
@@ -48,7 +51,7 @@ public class EdgeProvider extends SlookCocktailProvider {
             //Create new remote view using the specified layout file
             RemoteViews listEntryLayout = new RemoteViews(context.getPackageName(), R.layout.list_entry);
             String change = "";
-            String percentage = "%(";
+            String percentage = "(";
 
             // Set background color to green, red, or gray
 
@@ -56,6 +59,7 @@ public class EdgeProvider extends SlookCocktailProvider {
             if(stocks[i].getPercent_change() > 0.00) {
                 color = android.R.color.holo_green_light;
                 change += "+";
+                percentage += "+";
             } else if(stocks[i].getPercent_change() < 0.00) {
                 color = android.R.color.holo_red_light;
             } else {
@@ -75,7 +79,7 @@ public class EdgeProvider extends SlookCocktailProvider {
             change += String.format("%.2f", stocks[i].getDollar_change());
             listEntryLayout.setTextViewText(R.id.stock_change, change);
             percentage += String.format("%.2f", stocks[i].getPercent_change());
-            percentage += ")";
+            percentage += "%)";
             listEntryLayout.setTextViewText(R.id.stock_perc, percentage);
 
             //Add the new remote view to the parent/containing Layout object
