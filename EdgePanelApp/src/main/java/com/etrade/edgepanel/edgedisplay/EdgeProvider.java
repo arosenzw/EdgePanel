@@ -1,10 +1,10 @@
 package com.etrade.edgepanel.edgedisplay;
 
 import com.etrade.edgepanel.R;
-        import com.etrade.edgepanel.data.Stock;
-        import com.etrade.edgepanel.data.WatchListManager;
-        import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
-        import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
+import com.etrade.edgepanel.data.Stock;
+import com.etrade.edgepanel.data.WatchListManager;
+import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
+import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -15,8 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class EdgeProvider extends SlookCocktailProvider {
-	private static final String DELETE = "com.etrade.edgepanel.action.DELETE_STOCK";
-    private static final String ADD = "com.etrade.edgepanel.action.ADD_STOCK";
+	private static final String POPUP = "com.etrade.edgepanel.action.POPUP";
     private static final WatchListManager watchListManager = new WatchListManager();
     private static final int MAIN_LAYOUT = R.layout.main_view;
 
@@ -34,7 +33,7 @@ public class EdgeProvider extends SlookCocktailProvider {
     private void updateEdge(Context context) {
         SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, EdgeProvider.class));
-        RemoteViews rv = new RemoteViews(context.getPackageName(), MAIN_LAYOUT);
+        RemoteViews edgeView = new RemoteViews(context.getPackageName(), MAIN_LAYOUT);
 
         Stock s = new Stock("AAPL", "Apple", 151.99, 2.56, 1.07);
         Stock s1 = new Stock("FB", "Facebook", 151.99, -2.56, -1.07);
@@ -80,22 +79,25 @@ public class EdgeProvider extends SlookCocktailProvider {
             listEntryLayout.setTextViewText(R.id.stock_perc, percentage);
 
             //Add the new remote view to the parent/containing Layout object
-            rv.addView(R.id.main_layout, listEntryLayout);
+            edgeView.addView(R.id.main_layout, listEntryLayout);
 
         }
 
-	    // Set button functionalities
-//        rv.setOnClickPendingIntent(R.id.del_button, getPendingSelfIntent(context, DELETE));
-//        rv.setOnClickPendingIntent(R.id.add_button, getPendingSelfIntent(context, ADD));
+        // Set left-hand side "help view" window layout
+        RemoteViews menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
 
-        // Standard updating
+
+	    // Set button functionalities
+        menuView.setOnClickPendingIntent(R.id.settings_button, getPendingSelfIntent(context, POPUP));
+
+        // Update all widget items, including both the edge content and menu content
         if (cocktailIds != null) {
             for (int id : cocktailIds) {
-                mgr.updateCocktail(id, rv);
+                mgr.updateCocktail(id, edgeView, menuView);
             }
         }
     }
-    
+
     /**
      * Gets a {@code PendingIntent} object that is designed to target this class (self)
      *
@@ -121,14 +123,8 @@ public class EdgeProvider extends SlookCocktailProvider {
         Log.d("onReceive: ", intent.getAction());
 
         switch(intent.getAction()) {
-            case DELETE:
-                Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show();
-//                watchListManager.deleteStock();
-                updateEdge(context);
-                break;
-            case ADD:
-                Toast.makeText(context, "ADD", Toast.LENGTH_SHORT).show();
-                //watchListManager.addStock()
+            case POPUP:
+                Toast.makeText(context, "POPUP", Toast.LENGTH_SHORT).show();
                 updateEdge(context);
                 break;
             default:

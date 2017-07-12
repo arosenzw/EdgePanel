@@ -23,6 +23,10 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--Required for Edge sub-window-->
+            <!--<meta-data-->
+                <!--android:name="com.samsung.android.cocktail.subwindow.enable"-->
+                <!--android:value="true" />-->
         </activity>
 
         <receiver android:name="com.etrade.edgepanel.edgedisplay.EdgeProvider" >
