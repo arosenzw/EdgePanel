@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.etrade.edgepanel"
+    android:sharedUserId="com.samsung.android.coctailbar"
     android:versionCode="1"
-    android:versionName="1.0"
-    android:sharedUserId="com.samsung.android.coctailbar">
+    android:versionName="1.0">
 
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="23" />
 
     <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-
         <activity
-            android:name="com.etrade.edgepanel.EdgeConfigure"
-            android:label="@string/app_name" >
+            android:name=".EdgeConfigure"
+            android:label="OptionsHouse">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--Required for Edge sub-window-->
-            <!--<meta-data-->
-                <!--android:name="com.samsung.android.cocktail.subwindow.enable"-->
-                <!--android:value="true" />-->
+            <!-- Required for Edge sub-window -->
+            <!-- <meta-data -->
+            <!-- android:name="com.samsung.android.cocktail.subwindow.enable" -->
+            <!-- android:value="true" /> -->
         </activity>
 
-        <receiver android:name="com.etrade.edgepanel.edgedisplay.EdgeProvider" >
+        <receiver android:name=".edgedisplay.EdgeProvider">
             <intent-filter>
                 <action android:name="com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" />
             </intent-filter>
@@ -42,6 +45,7 @@
         <meta-data
             android:name="com.samsung.android.cocktail.mode"
             android:value="edge_panel" />
+
     </application>
 
 </manifest>

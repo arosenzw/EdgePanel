@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">WatchLists</string>
-    <string name="edge_name">Watch Lists</string>
+    <string name="app_name">OptionsHouse</string>
+    <string name="edge_name">OptionsHouse</string>
     <string name="edge_feeds_name">EdgeFeeds</string>
     <string name="description">Display watch lists in Edge panel</string>
+    <string name="refresh_button">Refresh</string>
 
 </resources>

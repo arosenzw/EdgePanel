@@ -7,22 +7,24 @@ import java.util.ArrayList;
  */
 
 public class WatchListManager {
-    private ArrayList<Stock> stocks;
+    private WatchList[] watch_lists;
 
-    public Stock[] getStocksAsArray() {
-        return (Stock[]) stocks.toArray(new Stock[stocks.size()]);
+    /*public WatchList[] getListsAsArray() {
+        return (WatchList[]) watch_lists.toArray(new WatchList[watch_lists.size()]);
+    }*/
+
+    public WatchListManager(WatchList[] w) { watch_lists = w; }
+
+    public WatchList[] getLists() {
+        return watch_lists;
     }
 
-    public ArrayList<Stock> getStocks() {
-        return stocks;
-    }
+   /* public void deleteList() {
+        watch_lists.remove(0); //keep microsoft
+    }*/
 
-    public void deleteStock() {
-        stocks.remove(0); //keep microsoft
-    }
-
-    public void insert_stock(Stock s) {
-        stocks.add(s);
-    }
+    /*public void insert_list(WatchList w) {
+        watch_lists.add(w);
+    }*/
 
 }
