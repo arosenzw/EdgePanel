@@ -2,7 +2,7 @@ package com.etrade.edgepanel.edgedisplay;
 
 import com.etrade.edgepanel.R;
 import com.etrade.edgepanel.data.Stock;
-import com.etrade.edgepanel.data.WatchList;
+import com.etrade.edgepanel.data.WatchListManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
 
@@ -11,21 +11,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 
 
 public class EdgeProvider extends SlookCocktailProvider {
-    private static final String POPUP = "com.etrade.edgepanel.action.POPUP";
     private static final String REFRESH = "com.etrade.edgepanel.action.REFRESH";
-    //private static final WatchListManager watchListManager = new WatchListManager();
+    private static final String SET_ACTIVE_WATCH_LIST = "com.etrade.edgepanel.action.SET_ACTIVE_WATCH_LIST";
+    private static final WatchListManager watchListManager = WatchListManager.getTestWatchListManager();
     private static final int MAIN_LAYOUT = R.layout.main_view;
 
 
@@ -42,84 +39,66 @@ public class EdgeProvider extends SlookCocktailProvider {
     private void updateEdge(Context context) {
         SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, EdgeProvider.class));
+        // Right-hand side "panel view" window layout
         RemoteViews edgeView = new RemoteViews(context.getPackageName(), MAIN_LAYOUT);
-        // Set left-hand side "help view" window layout
+        // Left-hand side "help view" window layout
         RemoteViews menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
-
 
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, getPendingSelfIntent(context, REFRESH));
         menuView.setTextViewText(R.id.update_date, getDate());
 
-        Stock s = new Stock("AAPL", "Apple", 151.99, 2.56, 1.07);
-        Stock s1 = new Stock("FB", "Facebook", 151.99, -2.56, -1.07);
-        Stock s2 = new Stock("MSFT", "Microsoft", 151.99, 2.56, 1.07);
-        Stock s3 = new Stock("NFLX", "Netflix", 151.99, 0.00, 0.00);
-        Stock s4 = new Stock("GOOGL", "Alphabet", 151.99, 5.00, 2.00);
-        Stock s5 = new Stock("CSCO", "Cisco", 100.00, -2.00, -5.00);
-        Stock s6 = new Stock("TSLA", "Tesla", 500.00, 3.15, 2.05);
-
-
-        Stock[] stocks1 = {s, s1, s2};
-        Stock[] stocks2 = {s3, s4, s5, s6};
-
-        WatchList w = new WatchList(stocks1);
-        WatchList w2 = new WatchList(stocks2);
-
-        WatchList[] lists = {w, w2};
-
-        //WatchListManager manager = new WatchListManager(lists);
-
-        for(int j = 0; j < lists.length; ++j) {
-            // Add this List to the Menu View
+        // Set available watch lists in menu
+        for (int i = 0; i < watchListManager.size(); i++) {
             RemoteViews watchListEntry = new RemoteViews(context.getPackageName(), R.layout.watch_list_entry);
-            String listNumber = "Watch List " + Integer.toString(j + 1);
-            watchListEntry.setTextViewText(R.id.watch_list_button, listNumber);
+            String text = "Watch List " + Integer.toString(i + 1);
+            watchListEntry.setTextViewText(R.id.watch_list_button, text);
             menuView.addView(R.id.lists, watchListEntry);
-            // Get the stocks in this list
-            Stock[] stocks = lists[j].getStocks();
+            watchListEntry.setOnClickPendingIntent(
+                    R.id.watch_list_button,
+                    getPendingSelfIntent(context, SET_ACTIVE_WATCH_LIST + ":" + Integer.toString(i))
+            );
+        }
 
-            // Add stocks to Remote View
-            for (int i = 0; i < stocks.length; i++) {
-                Log.d("Stock update", "New stock added: " + stocks[i].getTicker());
-                //Create new remote view using the specified layout file
-                RemoteViews listEntryLayout = new RemoteViews(context.getPackageName(), R.layout.list_entry);
-                String change = "";
-                String percentage = "(";
+        // Set stocks of active watch list in panel
+        Stock[] stocks = watchListManager.getActiveWatchList().getStocks();
+        for (int i = 0; i < stocks.length; i++) {
+            Log.d("Stock update", "New stock added: " + stocks[i].getTicker());
+            //Create new remote view using the specified layout file
+            RemoteViews listEntryLayout = new RemoteViews(context.getPackageName(), R.layout.list_entry);
+            String change = "";
+            String percentage = "(";
 
-                // Set background color to green, red, or gray
-
-                int color = 0;
-                if (stocks[i].getPercent_change() > 0.00) {
-                    color = android.R.color.holo_green_light;
-                    change += "+";
-                    percentage += "+";
-                } else if (stocks[i].getPercent_change() < 0.00) {
-                    color = android.R.color.holo_red_light;
-                } else {
-                    color = android.R.color.darker_gray;
-                }
-
-                listEntryLayout.setInt(R.id.stock_ticker, "setBackgroundResource", color);
-                listEntryLayout.setInt(R.id.stock_name, "setBackgroundResource", color);
-                listEntryLayout.setInt(R.id.stock_price, "setBackgroundResource", color);
-                listEntryLayout.setInt(R.id.stock_change, "setBackgroundResource", color);
-                listEntryLayout.setInt(R.id.stock_perc, "setBackgroundResource", color);
-
-                // Set TextView to appropriate stock text
-                listEntryLayout.setTextViewText(R.id.stock_ticker, stocks[i].getTicker());
-                listEntryLayout.setTextViewText(R.id.stock_name, stocks[i].getName());
-                listEntryLayout.setTextViewText(R.id.stock_price, Double.toString(stocks[i].getValue()));
-                change += String.format("%.2f", stocks[i].getDollar_change());
-                listEntryLayout.setTextViewText(R.id.stock_change, change);
-                percentage += String.format("%.2f", stocks[i].getPercent_change());
-                percentage += "%)";
-                listEntryLayout.setTextViewText(R.id.stock_perc, percentage);
-
-                //Add the new remote view to the parent/containing Layout object
-                edgeView.addView(R.id.main_layout, listEntryLayout);
-
+            // Set background color to green, red, or gray
+            int color = 0;
+            if (stocks[i].getPercent_change() > 0.00) {
+                color = android.R.color.holo_green_light;
+                change += "+";
+                percentage += "+";
+            } else if (stocks[i].getPercent_change() < 0.00) {
+                color = android.R.color.holo_red_light;
+            } else {
+                color = android.R.color.darker_gray;
             }
+
+            listEntryLayout.setInt(R.id.stock_ticker, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_name, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_price, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_change, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_perc, "setBackgroundResource", color);
+
+            // Set TextView to appropriate stock text
+            listEntryLayout.setTextViewText(R.id.stock_ticker, stocks[i].getTicker());
+            listEntryLayout.setTextViewText(R.id.stock_name, stocks[i].getName());
+            listEntryLayout.setTextViewText(R.id.stock_price, Double.toString(stocks[i].getValue()));
+            change += String.format("%.2f", stocks[i].getDollar_change());
+            listEntryLayout.setTextViewText(R.id.stock_change, change);
+            percentage += String.format("%.2f", stocks[i].getPercent_change());
+            percentage += "%)";
+            listEntryLayout.setTextViewText(R.id.stock_perc, percentage);
+
+            //Add the new remote view to the parent/containing Layout object
+            edgeView.addView(R.id.main_layout, listEntryLayout);
         }
 
 
@@ -139,16 +118,28 @@ public class EdgeProvider extends SlookCocktailProvider {
         return strDate;
     }
 
+    protected PendingIntent getPendingSelfIntent(Context context, String action) {
+        return getPendingSelfIntent(context, action, null);
+    }
+
     /**
      * Gets a {@code PendingIntent} object that is designed to target this class (self)
      *
      * @param context
      * @param action
+     *          Action to be executed
+     * @param extras
+     *          Extra key-values to be added to the intent
      * @return
      */
-    protected PendingIntent getPendingSelfIntent(Context context, String action) {
+    protected PendingIntent getPendingSelfIntent(Context context, String action, HashMap<String, String> extras) {
         Intent intent = new Intent(context, EdgeProvider.class);
         intent.setAction(action);
+        if (extras != null) {
+            for (String key : extras.keySet()) {
+                intent.putExtra(key, extras.get(key));
+            }
+        }
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
@@ -164,17 +155,15 @@ public class EdgeProvider extends SlookCocktailProvider {
         super.onReceive(context, intent);
         Log.d("onReceive: ", intent.getAction());
 
-        switch(intent.getAction()) {
-            case POPUP:
-                Toast.makeText(context, "POPUP", Toast.LENGTH_SHORT).show();
-                updateEdge(context);
-                break;
-            case REFRESH:
-                Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show();
-                updateEdge(context);
-                break;
-            default:
-                break;
+        String action = intent.getAction();
+        if (action.equals(REFRESH)) {
+            Toast.makeText(context, "Refreshed", Toast.LENGTH_SHORT).show();
+            updateEdge(context);
+        } else if (action.contains(SET_ACTIVE_WATCH_LIST)) {   //action = SET_ACTIVE + : + buttonNum
+            // Get correct button
+            int newActiveWatchList = Integer.parseInt(action.split(":")[1]);
+            watchListManager.setActive(newActiveWatchList);
+            updateEdge(context);
         }
     }
 }
