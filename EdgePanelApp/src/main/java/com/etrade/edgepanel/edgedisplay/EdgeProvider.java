@@ -23,7 +23,6 @@ public class EdgeProvider extends SlookCocktailProvider {
     private static final String REFRESH = "com.etrade.edgepanel.action.REFRESH";
     private static final String SET_ACTIVE_WATCH_LIST = "com.etrade.edgepanel.action.SET_ACTIVE_WATCH_LIST";
     private static final WatchListManager watchListManager = WatchListManager.getTestWatchListManager();
-    private static final int MAIN_LAYOUT = R.layout.main_view;
 
 
     @Override
@@ -40,12 +39,32 @@ public class EdgeProvider extends SlookCocktailProvider {
         SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, EdgeProvider.class));
         // Right-hand side "panel view" window layout
-        RemoteViews edgeView = new RemoteViews(context.getPackageName(), MAIN_LAYOUT);
+        RemoteViews edgeView = new RemoteViews(context.getPackageName(), R.layout.main_view);
         // Left-hand side "help view" window layout
         RemoteViews menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
 
+        updateMenuPanel(context, menuView);
+        updateEdgePanel(context, edgeView);
+
+        // Update all widget items, including both the edge content and menu content
+        if (cocktailIds != null) {
+            for (int id : cocktailIds) {
+                mgr.updateCocktail(id, edgeView, menuView);
+            }
+        }
+    }
+
+    /**
+     * Updates the left-hand side menu panel containing watch lists and buttons.
+     *
+     * @param context
+     * @param menuView
+     */
+    private void updateMenuPanel(Context context, RemoteViews menuView) {
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, getPendingSelfIntent(context, REFRESH));
+
+        // Add current date
         menuView.setTextViewText(R.id.update_date, getDate());
 
         // Set available watch lists in menu
@@ -59,7 +78,15 @@ public class EdgeProvider extends SlookCocktailProvider {
                     getPendingSelfIntent(context, SET_ACTIVE_WATCH_LIST + ":" + Integer.toString(i))
             );
         }
+    }
 
+    /**
+     * Updates the right-hand side edge panel containing stock information of a given watch list.
+     *
+     * @param context
+     * @param edgeView
+     */
+    private void updateEdgePanel(Context context, RemoteViews edgeView) {
         // Set stocks of active watch list in panel
         Stock[] stocks = watchListManager.getActiveWatchList().getStocks();
         for (int i = 0; i < stocks.length; i++) {
@@ -99,14 +126,6 @@ public class EdgeProvider extends SlookCocktailProvider {
 
             //Add the new remote view to the parent/containing Layout object
             edgeView.addView(R.id.main_layout, listEntryLayout);
-        }
-
-
-        // Update all widget items, including both the edge content and menu content
-        if (cocktailIds != null) {
-            for (int id : cocktailIds) {
-                mgr.updateCocktail(id, edgeView, menuView);
-            }
         }
     }
 
