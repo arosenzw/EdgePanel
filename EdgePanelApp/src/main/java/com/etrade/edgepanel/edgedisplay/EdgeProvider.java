@@ -11,8 +11,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class EdgeProvider extends SlookCocktailProvider {
@@ -42,6 +49,7 @@ public class EdgeProvider extends SlookCocktailProvider {
 
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, getPendingSelfIntent(context, REFRESH));
+        menuView.setTextViewText(R.id.update_date, getDate());
 
         Stock s = new Stock("AAPL", "Apple", 151.99, 2.56, 1.07);
         Stock s1 = new Stock("FB", "Facebook", 151.99, -2.56, -1.07);
@@ -121,6 +129,14 @@ public class EdgeProvider extends SlookCocktailProvider {
                 mgr.updateCocktail(id, edgeView, menuView);
             }
         }
+    }
+
+    public String getDate() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("M/d h:mm a");
+        String strDate = "Updated ";
+        strDate += sdf.format(calendar.getTime());
+        return strDate;
     }
 
     /**
