@@ -99,20 +99,16 @@ public class EdgeProvider extends SlookCocktailProvider {
             // Set background color to green, red, or gray
             int color = 0;
             if (stocks[i].getPercent_change() > 0.00) {
-                color = android.R.color.holo_green_light;
+                color = R.drawable.positive_gradient;
                 change += "+";
                 percentage += "+";
             } else if (stocks[i].getPercent_change() < 0.00) {
-                color = android.R.color.holo_red_light;
+                color = R.drawable.negative_gradient;
             } else {
-                color = android.R.color.darker_gray;
+                color = R.drawable.neutral_gradient;
             }
 
-            listEntryLayout.setInt(R.id.stock_ticker, "setBackgroundResource", color);
-            listEntryLayout.setInt(R.id.stock_name, "setBackgroundResource", color);
-            listEntryLayout.setInt(R.id.stock_price, "setBackgroundResource", color);
-            listEntryLayout.setInt(R.id.stock_change, "setBackgroundResource", color);
-            listEntryLayout.setInt(R.id.stock_perc, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock, "setBackgroundResource", color);
 
             // Set TextView to appropriate stock text
             listEntryLayout.setTextViewText(R.id.stock_ticker, stocks[i].getTicker());

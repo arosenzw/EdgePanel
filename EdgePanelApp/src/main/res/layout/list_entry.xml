@@ -3,27 +3,32 @@
     android:id="@+id/stock_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:isScrollContainer="true"
+    android:scrollbars="vertical"
+    android:layout_marginBottom="@dimen/item_margin">
 
     <LinearLayout
+        android:id="@+id/stock"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/stock_ticker"
-            android:layout_width="match_parent"
+            android:layout_width="383dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_light"
+            android:layout_marginLeft="@dimen/default_panel_icon_padding"
             android:gravity="left|center"
             android:text="TextView"
+            android:textAllCaps="true"
             android:textSize="20dp" />
 
         <TextView
             android:id="@+id/stock_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_light"
+            android:layout_marginLeft="@dimen/default_panel_icon_padding"
             android:gravity="left"
             android:text="TextView" />
 
@@ -31,7 +36,7 @@
             android:id="@+id/stock_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_light"
+            android:layout_marginRight="@dimen/default_panel_icon_padding"
             android:gravity="right"
             android:text="TextView"
             android:textSize="20dp" />
@@ -40,7 +45,7 @@
             android:id="@+id/stock_change"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_light"
+            android:layout_marginRight="@dimen/default_panel_icon_padding"
             android:gravity="right"
             android:text="TextView"
             android:textSize="20dp" />
@@ -49,12 +54,10 @@
             android:id="@+id/stock_perc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_light"
+            android:layout_marginRight="@dimen/default_panel_icon_padding"
             android:gravity="right"
             android:text="TextView"
+            android:layout_marginBottom="@dimen/default_panel_icon_padding"
             android:textSize="20dp" />
-
-
-
     </LinearLayout>
 </LinearLayout>
