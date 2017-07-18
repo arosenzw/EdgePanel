@@ -1,63 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/stock_layout"
+    android:id="@+id/stock"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:isScrollContainer="true"
-    android:scrollbars="vertical"
-    android:layout_marginBottom="@dimen/item_margin">
+    android:layout_marginBottom="0dp">
 
-    <LinearLayout
-        android:id="@+id/stock"
+    <TextView
+        android:id="@+id/stock_ticker"
+        android:layout_width="383dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/default_panel_icon_padding"
+        android:gravity="left|center"
+        android:text="TextView"
+        android:textAllCaps="true"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/stock_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/default_panel_icon_padding"
+        android:gravity="left"
+        android:text="TextView" />
 
-        <TextView
-            android:id="@+id/stock_ticker"
-            android:layout_width="383dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/default_panel_icon_padding"
-            android:gravity="left|center"
-            android:text="TextView"
-            android:textAllCaps="true"
-            android:textSize="20dp" />
+    <TextView
+        android:id="@+id/stock_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/default_panel_icon_padding"
+        android:gravity="right"
+        android:text="TextView"
+        android:textSize="20dp" />
 
-        <TextView
-            android:id="@+id/stock_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/default_panel_icon_padding"
-            android:gravity="left"
-            android:text="TextView" />
+    <TextView
+        android:id="@+id/stock_change"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/default_panel_icon_padding"
+        android:gravity="right"
+        android:text="TextView"
+        android:textSize="20dp" />
 
-        <TextView
-            android:id="@+id/stock_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/default_panel_icon_padding"
-            android:gravity="right"
-            android:text="TextView"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/stock_change"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/default_panel_icon_padding"
-            android:gravity="right"
-            android:text="TextView"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/stock_perc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/default_panel_icon_padding"
-            android:gravity="right"
-            android:text="TextView"
-            android:layout_marginBottom="@dimen/default_panel_icon_padding"
-            android:textSize="20dp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/stock_perc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/default_panel_icon_padding"
+        android:layout_marginRight="@dimen/default_panel_icon_padding"
+        android:gravity="right"
+        android:text="TextView"
+        android:textSize="20dp" />
 </LinearLayout>
