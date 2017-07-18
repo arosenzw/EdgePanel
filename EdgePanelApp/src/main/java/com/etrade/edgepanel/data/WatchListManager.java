@@ -46,16 +46,4 @@ public class WatchListManager {
         return new WatchListManager(lists);
     }
 
-    /*public WatchList[] getListsAsArray() {
-        return (WatchList[]) watch_lists.toArray(new WatchList[watch_lists.size()]);
-    }*/
-
-   /* public void deleteList() {
-        watch_lists.remove(0); //keep microsoft
-    }*/
-
-    /*public void insert_list(WatchList w) {
-        watch_lists.add(w);
-    }*/
-
 }

@@ -11,6 +11,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -22,8 +23,11 @@ import java.util.HashMap;
 public class EdgeProvider extends SlookCocktailProvider {
     private static final String REFRESH = "com.etrade.edgepanel.action.REFRESH";
     private static final String SET_ACTIVE_WATCH_LIST = "com.etrade.edgepanel.action.SET_ACTIVE_WATCH_LIST";
+    private static final String SETTINGS = "com.etrade.edgepanel.action.SETTINGS";
+    private static final String REORDER_STOCKS = "com.etrade.edgepanel.action.REORDER_STOCKS";
+    private static final String REORDER_WLS = "com.etrade.edgepanel.action.REORDER_WLS";
     private static final WatchListManager watchListManager = WatchListManager.getTestWatchListManager();
-
+    private static boolean displaySettings = false;
 
     @Override
     public void onUpdate(Context context, SlookCocktailManager cocktailManager, int[] cocktailIds) {
@@ -61,8 +65,20 @@ public class EdgeProvider extends SlookCocktailProvider {
      * @param menuView
      */
     private void updateMenuPanel(Context context, RemoteViews menuView) {
+        setMainMenu(context, menuView);
+        setSettingsMenu(context, menuView);
+    }
+
+    /**
+     * Display the normal menu window with the list of watch lists and settings button.
+     *
+     * @param context
+     * @param menuView
+     */
+    private void setMainMenu(Context context, RemoteViews menuView) {
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, getPendingSelfIntent(context, REFRESH));
+        menuView.setOnClickPendingIntent(R.id.settings_button, getPendingSelfIntent(context, SETTINGS));
 
         // Add current date
         menuView.setTextViewText(R.id.update_date, getDate());
@@ -78,6 +94,24 @@ public class EdgeProvider extends SlookCocktailProvider {
                     getPendingSelfIntent(context, SET_ACTIVE_WATCH_LIST + ":" + Integer.toString(i))
             );
         }
+    }
+
+    /**
+     * Display a settings view when the settings display is enabled
+     *
+     * @param context
+     * @param menuView
+     */
+    private void setSettingsMenu(Context context, RemoteViews menuView) {
+        if (!displaySettings) {
+            menuView.setViewVisibility(R.id.settings_wrapper, View.INVISIBLE);
+            return;
+        }
+        // else
+        menuView.setViewVisibility(R.id.settings_wrapper, View.INVISIBLE);
+
+        menuView.setOnClickPendingIntent(R.id.reorder_stocks, getPendingSelfIntent(context, REORDER_STOCKS));
+        menuView.setOnClickPendingIntent(R.id.reorder_watch_lists, getPendingSelfIntent(context, REORDER_WLS));
     }
 
     /**
@@ -179,6 +213,13 @@ public class EdgeProvider extends SlookCocktailProvider {
             int newActiveWatchList = Integer.parseInt(action.split(":")[1]);
             watchListManager.setActive(newActiveWatchList);
             updateEdge(context);
+        } else if (action.equals(SETTINGS)) {
+            this.displaySettings = !this.displaySettings;
+            updateEdge(context);
+        } else if (action.equals(REORDER_STOCKS)) {
+            Toast.makeText(context, "REORDER_STOCKS", Toast.LENGTH_SHORT).show();
+        } else if (action.equals(REORDER_WLS)) {
+            Toast.makeText(context, "REORDER_WLS", Toast.LENGTH_SHORT).show();
         }
     }
 }
