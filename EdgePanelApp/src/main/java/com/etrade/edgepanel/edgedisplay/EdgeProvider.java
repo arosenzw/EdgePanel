@@ -2,6 +2,7 @@ package com.etrade.edgepanel.edgedisplay;
 
 import com.etrade.edgepanel.R;
 import com.etrade.edgepanel.data.Stock;
+import com.etrade.edgepanel.data.WatchList;
 import com.etrade.edgepanel.data.WatchListManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
@@ -26,8 +27,11 @@ public class EdgeProvider extends SlookCocktailProvider {
     private static final String SETTINGS = "com.etrade.edgepanel.action.SETTINGS";
     private static final String REORDER_STOCKS = "com.etrade.edgepanel.action.REORDER_STOCKS";
     private static final String REORDER_WLS = "com.etrade.edgepanel.action.REORDER_WLS";
+    private static final String SELECT_STOCK = "com.etrade.edgepanel.action.SELECT_STOCK";
     private static final WatchListManager watchListManager = WatchListManager.getTestWatchListManager();
     private static boolean displaySettings = false;
+    private static boolean isReorderingStocks = false;
+    private static boolean isReorderingWls = false;
 
     @Override
     public void onUpdate(Context context, SlookCocktailManager cocktailManager, int[] cocktailIds) {
@@ -105,6 +109,7 @@ public class EdgeProvider extends SlookCocktailProvider {
     private void setSettingsMenu(Context context, RemoteViews menuView) {
         if (!displaySettings) {
             menuView.setViewVisibility(R.id.settings_background, View.INVISIBLE);
+            isReorderingStocks = isReorderingWls = false;
             return;
         }
         // else
@@ -156,8 +161,21 @@ public class EdgeProvider extends SlookCocktailProvider {
             percentage += "%)";
             listEntryLayout.setTextViewText(R.id.stock_perc, percentage);
 
-            //Add the new remote view to the parent/containing Layout object
+            // Add the new remote view to the parent/containing Layout object
             edgeView.addView(R.id.main_layout, listEntryLayout);
+
+            // Set onclick to activate reordering; isReordering checked in onReceive
+            listEntryLayout.setOnClickPendingIntent(
+                    R.id.stock,
+                    getPendingSelfIntent(context, SELECT_STOCK + ":" + i)
+            );
+
+            // Set border around active stock if reordering
+            if (isReorderingStocks) {
+                if (i == watchListManager.getActiveWatchList().getActiveStock()) {
+                    listEntryLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
+                }
+            }
         }
     }
 
@@ -208,7 +226,6 @@ public class EdgeProvider extends SlookCocktailProvider {
 
         String action = intent.getAction();
         if (action.equals(REFRESH)) {
-            Toast.makeText(context, "Refreshed", Toast.LENGTH_SHORT).show();
             updateEdge(context);
         } else if (action.contains(SET_ACTIVE_WATCH_LIST)) {   //action = SET_ACTIVE + : + buttonNum
             // Get correct button
@@ -219,9 +236,24 @@ public class EdgeProvider extends SlookCocktailProvider {
             this.displaySettings = !this.displaySettings;
             updateEdge(context);
         } else if (action.equals(REORDER_STOCKS)) {
-            Toast.makeText(context, "REORDER_STOCKS", Toast.LENGTH_SHORT).show();
+            this.isReorderingStocks = !this.isReorderingStocks;
         } else if (action.equals(REORDER_WLS)) {
-            Toast.makeText(context, "REORDER_WLS", Toast.LENGTH_SHORT).show();
+            this.isReorderingWls = !this.isReorderingWls;
+        } else if (action.contains(SELECT_STOCK)) {
+            if (isReorderingStocks) {
+                int stockNum = Integer.parseInt(action.split(":")[1]);
+                WatchList watchList = watchListManager.getActiveWatchList();
+                if (stockNum != watchList.getActiveStock()) {
+                    watchList.setActiveStock(stockNum);
+                } else {
+                    watchList.clearActiveStock();
+                }
+                updateEdge(context);
+            }
         }
+    }
+
+    private void displayTextPopup(Context context, String text) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
 }

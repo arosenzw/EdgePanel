@@ -1,13 +1,12 @@
 package com.etrade.edgepanel.data;
 
-import java.util.ArrayList;
-
 /**
  * Created by arosenzw on 7/13/17.
  */
 
 public class WatchList {
     private Stock[] stocks;
+    private int activeStock;    // stock selected for reordering
 
     public WatchList(Stock[] s) {
         stocks = s;
@@ -15,6 +14,18 @@ public class WatchList {
 
     public Stock[] getStocks() {
         return stocks;
+    }
+
+    public int getActiveStock() {
+        return activeStock;
+    }
+
+    public void setActiveStock(int i) {
+        activeStock = i;
+    }
+
+    public void clearActiveStock() {
+        activeStock = -1;
     }
 
     /**

@@ -3,4 +3,5 @@
     <color name="light_gray">#BDBDBD</color>
     <color name="dark_gray">#585858</color>
     <color name="transparent_gray">#19000000</color>
+    <color name="selected_border">@android:color/holo_blue_bright</color>
 </resources>
