@@ -104,14 +104,16 @@ public class EdgeProvider extends SlookCocktailProvider {
      */
     private void setSettingsMenu(Context context, RemoteViews menuView) {
         if (!displaySettings) {
-            menuView.setViewVisibility(R.id.settings_wrapper, View.INVISIBLE);
+            menuView.setViewVisibility(R.id.settings_background, View.INVISIBLE);
             return;
         }
         // else
-        menuView.setViewVisibility(R.id.settings_wrapper, View.INVISIBLE);
+        menuView.setViewVisibility(R.id.settings_background, View.VISIBLE);
 
         menuView.setOnClickPendingIntent(R.id.reorder_stocks, getPendingSelfIntent(context, REORDER_STOCKS));
         menuView.setOnClickPendingIntent(R.id.reorder_watch_lists, getPendingSelfIntent(context, REORDER_WLS));
+        // Set background to close settings menu upon click
+        menuView.setOnClickPendingIntent(R.id.settings_background, getPendingSelfIntent(context, SETTINGS));
     }
 
     /**
