@@ -7,6 +7,7 @@ import com.etrade.edgepanel.data.WatchListManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 public class EdgeProvider extends SlookCocktailProvider {
     private static final String REFRESH = "com.etrade.edgepanel.action.REFRESH";
     private static final String SET_ACTIVE_WATCH_LIST = "com.etrade.edgepanel.action.SET_ACTIVE_WATCH_LIST";
-    private static final String SETTINGS = "com.etrade.edgepanel.action.SETTINGS";
+    private static final String TOGGLE_SETTINGS = "com.etrade.edgepanel.action.TOGGLE_SETTINGS";
     private static final String REORDER_STOCKS = "com.etrade.edgepanel.action.REORDER_STOCKS";
     private static final String REORDER_WLS = "com.etrade.edgepanel.action.REORDER_WLS";
     private static final String SELECT_STOCK = "com.etrade.edgepanel.action.SELECT_STOCK";
@@ -82,7 +83,7 @@ public class EdgeProvider extends SlookCocktailProvider {
     private void setMainMenu(Context context, RemoteViews menuView) {
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, getPendingSelfIntent(context, REFRESH));
-        menuView.setOnClickPendingIntent(R.id.settings_button, getPendingSelfIntent(context, SETTINGS));
+        menuView.setOnClickPendingIntent(R.id.settings_button, getPendingSelfIntent(context, TOGGLE_SETTINGS));
 
         // Add current date
         menuView.setTextViewText(R.id.update_date, getDate());
@@ -108,10 +109,7 @@ public class EdgeProvider extends SlookCocktailProvider {
      */
     private void setSettingsMenu(Context context, RemoteViews menuView) {
         if (!displaySettings) {
-            menuView.setViewVisibility(R.id.settings_background, View.INVISIBLE);
-            // Disable reordering ability
-            isReorderingStocks = isReorderingWls = false;
-            watchListManager.getActiveWatchList().clearActiveStock();
+            cancelSettings(context);
             return;
         }
         // else
@@ -120,7 +118,34 @@ public class EdgeProvider extends SlookCocktailProvider {
         menuView.setOnClickPendingIntent(R.id.reorder_stocks, getPendingSelfIntent(context, REORDER_STOCKS));
         menuView.setOnClickPendingIntent(R.id.reorder_watch_lists, getPendingSelfIntent(context, REORDER_WLS));
         // Set background to close settings menu upon click
-        menuView.setOnClickPendingIntent(R.id.settings_background, getPendingSelfIntent(context, SETTINGS));
+        menuView.setOnClickPendingIntent(R.id.settings_background, getPendingSelfIntent(context, TOGGLE_SETTINGS));
+        toggleArrowButtons(context, false);
+    }
+
+    private void toggleArrowButtons(Context context, boolean showArrows) {
+        RemoteViews menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
+        if (showArrows) {
+            menuView.setViewVisibility(R.id.reorder_buttons, View.INVISIBLE);
+            menuView.setViewVisibility(R.id.arrow_buttons, View.VISIBLE);
+            menuView.setViewVisibility(R.id.upBtn, View.VISIBLE);
+        } else {
+            menuView.setViewVisibility(R.id.reorder_buttons, View.VISIBLE);
+            menuView.setViewVisibility(R.id.arrow_buttons, View.INVISIBLE);
+        }
+    }
+
+    /**
+     * Clears the settings window and resets visibilities back to normal
+     *
+     * @param context
+     */
+    private void cancelSettings(Context context) {
+        RemoteViews menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
+        toggleArrowButtons(context, false);
+        menuView.setViewVisibility(R.id.settings_background, View.INVISIBLE);
+        // Disable reordering ability
+        isReorderingStocks = isReorderingWls = false;
+        watchListManager.getActiveWatchList().clearActiveStock();
     }
 
     /**
@@ -233,14 +258,16 @@ public class EdgeProvider extends SlookCocktailProvider {
             // Get correct button
             int newActiveWatchList = Integer.parseInt(action.split(":")[1]);
             watchListManager.setActive(newActiveWatchList);
-        } else if (action.equals(SETTINGS)) {
-            this.displaySettings = !this.displaySettings;
+        } else if (action.equals(TOGGLE_SETTINGS)) {
+            displaySettings = !displaySettings;
         } else if (action.equals(REORDER_STOCKS)) {
-            this.isReorderingStocks = !this.isReorderingStocks;
-            this.isReorderingWls = false;
+            isReorderingStocks = !isReorderingStocks;
+            isReorderingWls = false;
+            toggleArrowButtons(context, true);
         } else if (action.equals(REORDER_WLS)) {
-            this.isReorderingWls = !this.isReorderingWls;
-            this.isReorderingStocks = false;
+            isReorderingWls = !isReorderingWls;
+            isReorderingStocks = false;
+            toggleArrowButtons(context, true);
             watchListManager.getActiveWatchList().clearActiveStock();
         } else if (action.contains(SELECT_STOCK)) {
             if (isReorderingStocks) {
@@ -248,8 +275,10 @@ public class EdgeProvider extends SlookCocktailProvider {
                 WatchList watchList = watchListManager.getActiveWatchList();
                 if (stockNum != watchList.getActiveStock()) {
                     watchList.setActiveStock(stockNum);
+                    toggleArrowButtons(context, true);
                 } else {
                     watchList.clearActiveStock();
+                    toggleArrowButtons(context, false);
                 }
             }
         }
