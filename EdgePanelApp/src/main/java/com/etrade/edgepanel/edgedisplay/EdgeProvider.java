@@ -152,6 +152,7 @@ public class EdgeProvider extends SlookCocktailProvider {
             }
 
             listEntryLayout.setInt(R.id.stock, "setBackgroundResource", color);
+            listEntryLayout.setInt(R.id.stock_border, "setBackgroundResource", color);
 
             // Set TextView to appropriate stock text
             listEntryLayout.setTextViewText(R.id.stock_ticker, stocks[i].getTicker());
@@ -228,19 +229,19 @@ public class EdgeProvider extends SlookCocktailProvider {
 
         String action = intent.getAction();
         if (action.equals(REFRESH)) {
-            updateEdge(context);
         } else if (action.contains(SET_ACTIVE_WATCH_LIST)) {   //action = SET_ACTIVE + : + buttonNum
             // Get correct button
             int newActiveWatchList = Integer.parseInt(action.split(":")[1]);
             watchListManager.setActive(newActiveWatchList);
-            updateEdge(context);
         } else if (action.equals(SETTINGS)) {
             this.displaySettings = !this.displaySettings;
-            updateEdge(context);
         } else if (action.equals(REORDER_STOCKS)) {
             this.isReorderingStocks = !this.isReorderingStocks;
+            this.isReorderingWls = false;
         } else if (action.equals(REORDER_WLS)) {
             this.isReorderingWls = !this.isReorderingWls;
+            this.isReorderingStocks = false;
+            watchListManager.getActiveWatchList().clearActiveStock();
         } else if (action.contains(SELECT_STOCK)) {
             if (isReorderingStocks) {
                 int stockNum = Integer.parseInt(action.split(":")[1]);
@@ -250,9 +251,9 @@ public class EdgeProvider extends SlookCocktailProvider {
                 } else {
                     watchList.clearActiveStock();
                 }
-                updateEdge(context);
             }
         }
+        updateEdge(context);
     }
 
     private void displayTextPopup(Context context, String text) {
