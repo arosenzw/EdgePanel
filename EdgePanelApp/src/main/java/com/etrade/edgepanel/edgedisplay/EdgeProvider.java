@@ -109,7 +109,9 @@ public class EdgeProvider extends SlookCocktailProvider {
     private void setSettingsMenu(Context context, RemoteViews menuView) {
         if (!displaySettings) {
             menuView.setViewVisibility(R.id.settings_background, View.INVISIBLE);
+            // Disable reordering ability
             isReorderingStocks = isReorderingWls = false;
+            watchListManager.getActiveWatchList().clearActiveStock();
             return;
         }
         // else
