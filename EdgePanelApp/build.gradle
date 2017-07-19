@@ -2,10 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        sim {
+        simulator {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
             storeFile file('/Users/dpowell1/AndroidStudioProjects/EdgeScreen/sim_test.jks')
+            storePassword 'android'
         }
     }
     compileSdkVersion 23
@@ -21,6 +22,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
+            signingConfig signingConfigs.simulator
         }
     }
     productFlavors {
