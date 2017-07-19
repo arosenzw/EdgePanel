@@ -30,6 +30,8 @@ public class EdgeProvider extends SlookCocktailProvider {
     private static final String REORDER_WLS = "com.etrade.edgepanel.action.REORDER_WLS";
     private static final String SELECT_STOCK = "com.etrade.edgepanel.action.SELECT_STOCK";
     private static final WatchListManager watchListManager = WatchListManager.getTestWatchListManager();
+    private static RemoteViews edgeView;
+    private static RemoteViews menuView;
     private static boolean displaySettings = false;
     private static boolean isReorderingStocks = false;
     private static boolean isReorderingWls = false;
@@ -48,12 +50,12 @@ public class EdgeProvider extends SlookCocktailProvider {
         SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, EdgeProvider.class));
         // Right-hand side "panel view" window layout
-        RemoteViews edgeView = new RemoteViews(context.getPackageName(), R.layout.main_view);
+        edgeView = new RemoteViews(context.getPackageName(), R.layout.main_view);
         // Left-hand side "help view" window layout
-        RemoteViews menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
+        menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
 
-        updateMenuPanel(context, menuView);
-        updateEdgePanel(context, edgeView);
+        updateMenuPanel(context);
+        updateEdgePanel(context);
 
         // Update all widget items, including both the edge content and menu content
         if (cocktailIds != null) {
@@ -67,20 +69,18 @@ public class EdgeProvider extends SlookCocktailProvider {
      * Updates the left-hand side menu panel containing watch lists and buttons.
      *
      * @param context
-     * @param menuView
      */
-    private void updateMenuPanel(Context context, RemoteViews menuView) {
-        setMainMenu(context, menuView);
-        setSettingsMenu(context, menuView);
+    private void updateMenuPanel(Context context) {
+        setMainMenu(context);
+        setSettingsMenu(context);
     }
 
     /**
      * Display the normal menu window with the list of watch lists and settings button.
      *
      * @param context
-     * @param menuView
      */
-    private void setMainMenu(Context context, RemoteViews menuView) {
+    private void setMainMenu(Context context) {
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, getPendingSelfIntent(context, REFRESH));
         menuView.setOnClickPendingIntent(R.id.settings_button, getPendingSelfIntent(context, TOGGLE_SETTINGS));
@@ -105,9 +105,8 @@ public class EdgeProvider extends SlookCocktailProvider {
      * Display a settings view when the settings display is enabled
      *
      * @param context
-     * @param menuView
      */
-    private void setSettingsMenu(Context context, RemoteViews menuView) {
+    private void setSettingsMenu(Context context) {
         if (!displaySettings) {
             cancelSettings(context);
             return;
@@ -119,15 +118,13 @@ public class EdgeProvider extends SlookCocktailProvider {
         menuView.setOnClickPendingIntent(R.id.reorder_watch_lists, getPendingSelfIntent(context, REORDER_WLS));
         // Set background to close settings menu upon click
         menuView.setOnClickPendingIntent(R.id.settings_background, getPendingSelfIntent(context, TOGGLE_SETTINGS));
-        toggleArrowButtons(context, false);
+        toggleArrowButtons(context, (watchListManager.getActiveWatchList().getActiveStock() >= 0));
     }
 
     private void toggleArrowButtons(Context context, boolean showArrows) {
-        RemoteViews menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
         if (showArrows) {
             menuView.setViewVisibility(R.id.reorder_buttons, View.INVISIBLE);
             menuView.setViewVisibility(R.id.arrow_buttons, View.VISIBLE);
-            menuView.setViewVisibility(R.id.upBtn, View.VISIBLE);
         } else {
             menuView.setViewVisibility(R.id.reorder_buttons, View.VISIBLE);
             menuView.setViewVisibility(R.id.arrow_buttons, View.INVISIBLE);
@@ -152,9 +149,8 @@ public class EdgeProvider extends SlookCocktailProvider {
      * Updates the right-hand side edge panel containing stock information of a given watch list.
      *
      * @param context
-     * @param edgeView
      */
-    private void updateEdgePanel(Context context, RemoteViews edgeView) {
+    private void updateEdgePanel(Context context) {
         // Set stocks of active watch list in panel
         Stock[] stocks = watchListManager.getActiveWatchList().getStocks();
         for (int i = 0; i < stocks.length; i++) {
@@ -263,11 +259,9 @@ public class EdgeProvider extends SlookCocktailProvider {
         } else if (action.equals(REORDER_STOCKS)) {
             isReorderingStocks = !isReorderingStocks;
             isReorderingWls = false;
-            toggleArrowButtons(context, true);
         } else if (action.equals(REORDER_WLS)) {
             isReorderingWls = !isReorderingWls;
             isReorderingStocks = false;
-            toggleArrowButtons(context, true);
             watchListManager.getActiveWatchList().clearActiveStock();
         } else if (action.contains(SELECT_STOCK)) {
             if (isReorderingStocks) {
@@ -275,10 +269,8 @@ public class EdgeProvider extends SlookCocktailProvider {
                 WatchList watchList = watchListManager.getActiveWatchList();
                 if (stockNum != watchList.getActiveStock()) {
                     watchList.setActiveStock(stockNum);
-                    toggleArrowButtons(context, true);
                 } else {
                     watchList.clearActiveStock();
-                    toggleArrowButtons(context, false);
                 }
             }
         }
