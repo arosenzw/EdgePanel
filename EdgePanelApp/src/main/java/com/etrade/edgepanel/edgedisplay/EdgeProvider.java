@@ -22,12 +22,15 @@ import java.util.HashMap;
 
 
 public class EdgeProvider extends SlookCocktailProvider {
-    private static final String REFRESH = "com.etrade.edgepanel.action.REFRESH";
-    private static final String SET_ACTIVE_WATCH_LIST = "com.etrade.edgepanel.action.SET_ACTIVE_WATCH_LIST";
-    private static final String TOGGLE_SETTINGS = "com.etrade.edgepanel.action.TOGGLE_SETTINGS";
-    private static final String REORDER_STOCKS = "com.etrade.edgepanel.action.REORDER_STOCKS";
-    private static final String REORDER_WLS = "com.etrade.edgepanel.action.REORDER_WLS";
-    private static final String SELECT_STOCK = "com.etrade.edgepanel.action.SELECT_STOCK";
+    private static final String ACTION_HEADER = "com.etrade.edgepanel.action.";
+    private static final String REFRESH = ACTION_HEADER+"REFRESH";
+    private static final String SET_ACTIVE_WATCH_LIST = ACTION_HEADER+"SET_ACTIVE_WATCH_LIST";
+    private static final String TOGGLE_SETTINGS = ACTION_HEADER+"TOGGLE_SETTINGS";
+    private static final String REORDER_STOCKS = ACTION_HEADER+"REORDER_STOCKS";
+    private static final String REORDER_WLS = ACTION_HEADER+"REORDER_WLS";
+    private static final String SELECT_STOCK = ACTION_HEADER+"SELECT_STOCK";
+    private static final String SWAP_STOCK_UP = ACTION_HEADER+"SWAP_STOCK_UP";
+    private static final String SWAP_STOCK_DOWN = ACTION_HEADER+"SWAP_STOCK_DOWN";
     private static final WatchListManager watchListManager = WatchListManager.getTestWatchListManager();
     private static RemoteViews edgeView;
     private static RemoteViews menuView;
@@ -124,6 +127,9 @@ public class EdgeProvider extends SlookCocktailProvider {
         if (showArrows) {
             menuView.setViewVisibility(R.id.reorder_buttons, View.INVISIBLE);
             menuView.setViewVisibility(R.id.arrow_buttons, View.VISIBLE);
+            // Add button functionality
+            menuView.setOnClickPendingIntent(R.id.upBtn, getPendingSelfIntent(context, SWAP_STOCK_UP));
+            menuView.setOnClickPendingIntent(R.id.downBtn, getPendingSelfIntent(context, SWAP_STOCK_DOWN));
         } else {
             menuView.setViewVisibility(R.id.reorder_buttons, View.VISIBLE);
             menuView.setViewVisibility(R.id.arrow_buttons, View.INVISIBLE);
@@ -272,6 +278,9 @@ public class EdgeProvider extends SlookCocktailProvider {
                     watchList.clearActiveStock();
                 }
             }
+        } else if (action.equals(SWAP_STOCK_UP) || action.equals(SWAP_STOCK_DOWN)) {
+            WatchList wl = watchListManager.getActiveWatchList();
+            wl.swap(wl.getActiveStock(), (action.equals(SWAP_STOCK_UP) ? -1 : 1));
         }
         updateEdge(context);
     }

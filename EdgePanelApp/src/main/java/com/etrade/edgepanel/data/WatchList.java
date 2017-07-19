@@ -54,6 +54,7 @@ public class WatchList {
         Stock s = stocks[stock];
         stocks[stock] = stocks[stock+direction];
         stocks[stock+direction] = s;
+        setActiveStock(stock+direction);
     }
 
     public void moveStock(int oldPos, int newPos) {
