@@ -37,6 +37,10 @@
             <meta-data
                 android:name="com.samsung.android.cocktail.provider"
                 android:resource="@xml/edge_panel" />
+
+            <!--Necessary for ListView in EdgeSimulator-->
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/listview_simulator_config"/>
         </receiver>
 
         <meta-data
