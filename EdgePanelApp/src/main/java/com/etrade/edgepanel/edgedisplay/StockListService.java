@@ -75,20 +75,17 @@ public class StockListService extends RemoteViewsService {
             percentage += "%)";
             stockLayout.setTextViewText(R.id.stock_perc, percentage);
 
-//            // Set onclick to activate reordering; isReordering checked in onReceive
-//            stockLayout.setOnClickPendingIntent(
-//                    R.id.stock,
-//                    EdgeProvider.getPendingSelfIntent(
-//                            context,
-//                            context.getString(R.string.SELECT_STOCK) + ":" + position)
-//            );
-//
-//            // Set border around active stock if reordering
-//            if (watchListManager.isReorderingStocks) {
-//                if (position == watchListManager.getActiveWatchList().getActiveStock()) {
-//                    stockLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
-//                }
-//            }
+            // Set individual item onClick events using fillInIntents
+            Intent fillInIntent = new Intent();
+            fillInIntent.putExtra(EdgeProvider.SELECT_STOCK, position);  //specify which item was clicked
+            stockLayout.setOnClickFillInIntent(R.id.stock, fillInIntent);
+
+            // Set border around active stock if reordering
+            if (watchListManager.isReorderingStocks) {
+                if (position == watchListManager.getActiveWatchList().getActiveStock()) {
+                    stockLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
+                }
+            }
 
             return stockLayout;
         }

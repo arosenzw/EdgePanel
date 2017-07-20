@@ -22,17 +22,19 @@ import java.util.HashMap;
 
 public class EdgeProvider extends SlookCocktailProvider {
     private static final String ACTION_HEADER = "com.etrade.edgepanel.action.";
-    private static final String REFRESH = ACTION_HEADER+"REFRESH";
-    private static final String SET_ACTIVE_WATCH_LIST = ACTION_HEADER+"SET_ACTIVE_WATCH_LIST";
-    private static final String TOGGLE_SETTINGS = ACTION_HEADER+"TOGGLE_SETTINGS";
-    private static final String REORDER_STOCKS = ACTION_HEADER+"REORDER_STOCKS";
-    private static final String REORDER_WLS = ACTION_HEADER+"REORDER_WLS";
-    private static final String SELECT_STOCK = ACTION_HEADER+"SELECT_STOCK";
-    private static final String SWAP_STOCK_UP = ACTION_HEADER+"SWAP_STOCK_UP";
-    private static final String SWAP_STOCK_DOWN = ACTION_HEADER+"SWAP_STOCK_DOWN";
+    public static final String REFRESH = ACTION_HEADER+"REFRESH";
+    public static final String SET_ACTIVE_WATCH_LIST = ACTION_HEADER+"SET_ACTIVE_WATCH_LIST";
+    public static final String TOGGLE_SETTINGS = ACTION_HEADER+"TOGGLE_SETTINGS";
+    public static final String REORDER_STOCKS = ACTION_HEADER+"REORDER_STOCKS";
+    public static final String REORDER_WLS = ACTION_HEADER+"REORDER_WLS";
+    public static final String SELECT_STOCK = ACTION_HEADER+"SELECT_STOCK";
+    public static final String SWAP_STOCK_UP = ACTION_HEADER+"SWAP_STOCK_UP";
+    public static final String SWAP_STOCK_DOWN = ACTION_HEADER+"SWAP_STOCK_DOWN";
     private static WatchListManager watchListManager = WatchListManager.getInstance();
     private static RemoteViews edgeView;
     private static RemoteViews menuView;
+    public static final int EDGE_PANEL_LAYOUT = R.layout.stock_list_layout;
+    public static final int MENU_PANEL_LAYOUT = R.layout.menu_window;
     public static boolean displaySettings = false;
 
     @Override
@@ -49,9 +51,9 @@ public class EdgeProvider extends SlookCocktailProvider {
         SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, EdgeProvider.class));
         // Right-hand side "panel view" window layout
-        edgeView = new RemoteViews(context.getPackageName(), R.layout.stock_list_layout);
+        edgeView = new RemoteViews(context.getPackageName(), EDGE_PANEL_LAYOUT);
         // Left-hand side "help view" window layout
-        menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
+        menuView = new RemoteViews(context.getPackageName(), MENU_PANEL_LAYOUT);
 
         updateMenuPanel(context);
         updateEdgePanel(context);
@@ -80,7 +82,7 @@ public class EdgeProvider extends SlookCocktailProvider {
      * @param context
      */
     private void setMainMenu(Context context) {
-        menuView.removeAllViews(R.id.lists);
+        menuView.removeAllViews(R.id.lists);     // clear menu before redrawing
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, getPendingSelfIntent(context, REFRESH));
         menuView.setOnClickPendingIntent(R.id.settings_button, getPendingSelfIntent(context, TOGGLE_SETTINGS));
@@ -154,9 +156,14 @@ public class EdgeProvider extends SlookCocktailProvider {
      * @param context
      */
     private void updateEdgePanel(Context context) {
-        // ListView
-        Intent lvIntent = new Intent(context, StockListService.class);
-        edgeView.setRemoteAdapter(R.id.stock_list, lvIntent);
+        // Set up ListView
+        Intent populateIntent = new Intent(context, StockListService.class);
+        edgeView.setRemoteAdapter(R.id.stock_list, populateIntent);
+        // Set up general pending intent template that will capture all touches.
+        // StockListService.StockFactory will set individual fill-in-intents that
+        // specify what should be done on a per-list-item basis upon receipt of a
+        // touch from the general intent below
+        edgeView.setPendingIntentTemplate(R.id.stock_list, getPendingSelfIntent(context, SELECT_STOCK));
     }
 
     public String getDate() {
@@ -221,7 +228,7 @@ public class EdgeProvider extends SlookCocktailProvider {
             watchListManager.getActiveWatchList().clearActiveStock();
         } else if (action.contains(SELECT_STOCK)) {
             if (watchListManager.isReorderingStocks) {
-                int stockNum = Integer.parseInt(action.split(":")[1]);
+                int stockNum = intent.getIntExtra(SELECT_STOCK, 0);
                 WatchList watchList = watchListManager.getActiveWatchList();
                 if (stockNum != watchList.getActiveStock()) {
                     watchList.setActiveStock(stockNum);
