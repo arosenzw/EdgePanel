@@ -31,7 +31,7 @@ public class EdgeProvider extends SlookCocktailProvider {
     private static final String SELECT_STOCK = ACTION_HEADER+"SELECT_STOCK";
     private static final String SWAP_STOCK_UP = ACTION_HEADER+"SWAP_STOCK_UP";
     private static final String SWAP_STOCK_DOWN = ACTION_HEADER+"SWAP_STOCK_DOWN";
-    private static final WatchListManager watchListManager = WatchListManager.getTestWatchListManager();
+    private static WatchListManager watchListManager = WatchListManager.getInstance();
     private static RemoteViews edgeView;
     private static RemoteViews menuView;
     private static boolean displaySettings = false;
@@ -52,7 +52,7 @@ public class EdgeProvider extends SlookCocktailProvider {
         SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, EdgeProvider.class));
         // Right-hand side "panel view" window layout
-        edgeView = new RemoteViews(context.getPackageName(), R.layout.main_view);
+        edgeView = new RemoteViews(context.getPackageName(), R.layout.stock_list_layout);
         // Left-hand side "help view" window layout
         menuView = new RemoteViews(context.getPackageName(), R.layout.menu_window);
 
@@ -156,56 +156,23 @@ public class EdgeProvider extends SlookCocktailProvider {
      * @param context
      */
     private void updateEdgePanel(Context context) {
-        // Set stocks of active watch list in panel
-        Stock[] stocks = watchListManager.getActiveWatchList().getStocks();
-        for (int i = 0; i < stocks.length; i++) {
-            Log.d("Stock update", "New stock added: " + stocks[i].getTicker());
-            //Create new remote view using the specified layout file
-            RemoteViews listEntryLayout = new RemoteViews(context.getPackageName(), R.layout.list_entry);
-            String change = "";
-            String percentage = "(";
+        // ListView
+        Intent lvIntent = new Intent(context, StockListService.class);
+        edgeView.setRemoteAdapter(R.id.stock_list, lvIntent);
 
-            // Set background color to green, red, or gray
-            int color = 0;
-            if (stocks[i].getPercent_change() > 0.00) {
-                color = R.drawable.positive_gradient;
-                change += "+";
-                percentage += "+";
-            } else if (stocks[i].getPercent_change() < 0.00) {
-                color = R.drawable.negative_gradient;
-            } else {
-                color = R.drawable.neutral_gradient;
-            }
+//        // Set onclick to activate reordering; isReordering checked in onReceive
+//        listEntryLayout.setOnClickPendingIntent(
+//                R.id.stock,
+//                getPendingSelfIntent(context, SELECT_STOCK + ":" + i)
+//        );
+//
+//        // Set border around active stock if reordering
+//        if (isReorderingStocks) {
+//            if (i == watchListManager.getActiveWatchList().getActiveStock()) {
+//                listEntryLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
+//            }
+//        }
 
-            listEntryLayout.setInt(R.id.stock, "setBackgroundResource", color);
-            listEntryLayout.setInt(R.id.stock_border, "setBackgroundResource", color);
-
-            // Set TextView to appropriate stock text
-            listEntryLayout.setTextViewText(R.id.stock_ticker, stocks[i].getTicker());
-            listEntryLayout.setTextViewText(R.id.stock_name, stocks[i].getName());
-            listEntryLayout.setTextViewText(R.id.stock_price, Double.toString(stocks[i].getValue()));
-            change += String.format("%.2f", stocks[i].getDollar_change());
-            listEntryLayout.setTextViewText(R.id.stock_change, change);
-            percentage += String.format("%.2f", stocks[i].getPercent_change());
-            percentage += "%)";
-            listEntryLayout.setTextViewText(R.id.stock_perc, percentage);
-
-            // Add the new remote view to the parent/containing Layout object
-            edgeView.addView(R.id.main_layout, listEntryLayout);
-
-            // Set onclick to activate reordering; isReordering checked in onReceive
-            listEntryLayout.setOnClickPendingIntent(
-                    R.id.stock,
-                    getPendingSelfIntent(context, SELECT_STOCK + ":" + i)
-            );
-
-            // Set border around active stock if reordering
-            if (isReorderingStocks) {
-                if (i == watchListManager.getActiveWatchList().getActiveStock()) {
-                    listEntryLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
-                }
-            }
-        }
     }
 
     public String getDate() {

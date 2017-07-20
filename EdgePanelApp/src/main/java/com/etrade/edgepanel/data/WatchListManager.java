@@ -8,7 +8,7 @@ public class WatchListManager {
     private WatchList[] watch_lists;
     private int active;
 
-    public WatchListManager(WatchList[] watch_lists) {
+    private WatchListManager(WatchList[] watch_lists) {
         this.watch_lists = watch_lists;
         this.active = 0; //show first watch list in array
     }
@@ -25,7 +25,11 @@ public class WatchListManager {
         active = i;
     }
 
-    public static WatchListManager getTestWatchListManager() {
+    public static WatchListManager getInstance() {
+        return WatchListManagerSingleton.instance;
+    }
+
+    private static WatchListManager getTestWatchListManager() {
         // Sample stocks
         Stock s = new Stock("AAPL", "Apple", 151.99, 2.56, 1.07);
         Stock s1 = new Stock("FB", "Facebook", 151.99, -2.56, -1.07);
@@ -35,7 +39,7 @@ public class WatchListManager {
         Stock s5 = new Stock("CSCO", "Cisco", 100.00, -2.00, -5.00);
         Stock s6 = new Stock("TSLA", "Tesla", 500.00, 3.15, 2.05);
 
-        Stock[] stocks1 = {s, s1, s2};
+        Stock[] stocks1 = {s, s1, s2, s, s1, s2, s, s1, s2, s, s1, s2};
         Stock[] stocks2 = {s3, s4, s5, s6};
 
         WatchList w = new WatchList(stocks1);
@@ -44,6 +48,10 @@ public class WatchListManager {
         WatchList[] lists = {w, w2};
 
         return new WatchListManager(lists);
+    }
+
+    private static class WatchListManagerSingleton {
+        private static final WatchListManager instance = WatchListManager.getTestWatchListManager();
     }
 
 }

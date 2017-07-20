@@ -32,6 +32,8 @@
         <receiver android:name=".edgedisplay.EdgeProvider">
             <intent-filter>
                 <action android:name="com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" />
+                <!--Below necessary for ListView in simulator-->
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
@@ -42,6 +44,11 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/listview_simulator_config"/>
         </receiver>
+
+        <service
+            android:name=".edgedisplay.StockListService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <meta-data
             android:name="com.samsung.android.cocktail.mode"

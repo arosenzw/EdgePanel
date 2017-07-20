@@ -16,6 +16,10 @@ public class WatchList {
         return stocks;
     }
 
+    public int size() {
+        return stocks.length;
+    }
+
     public int getActiveStock() {
         return activeStock;
     }
@@ -26,6 +30,10 @@ public class WatchList {
 
     public void clearActiveStock() {
         activeStock = -1;
+    }
+
+    public Stock getStock(int pos) {
+        return stocks[pos];
     }
 
     /**
