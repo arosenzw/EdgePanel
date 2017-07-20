@@ -1,5 +1,6 @@
 package com.etrade.edgepanel.edgedisplay;
 
+import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -13,14 +14,16 @@ public class StockListService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent arg0) {
-        return new StockFactory(watchListManager);
+        return new StockFactory(this.getApplicationContext(), watchListManager);
     }
 
     private class StockFactory implements RemoteViewsService.RemoteViewsFactory {
         private WatchListManager watchListManager;
+        private Context context;
         private final String TAG = StockFactory.class.getSimpleName();
 
-        public StockFactory(WatchListManager watchListManager) {
+        public StockFactory(Context context, WatchListManager watchListManager) {
+            this.context = context;
             this.watchListManager = watchListManager;
         }
 
@@ -71,6 +74,21 @@ public class StockListService extends RemoteViewsService {
             percentage += String.format("%.2f", stock.getPercent_change());
             percentage += "%)";
             stockLayout.setTextViewText(R.id.stock_perc, percentage);
+
+//            // Set onclick to activate reordering; isReordering checked in onReceive
+//            stockLayout.setOnClickPendingIntent(
+//                    R.id.stock,
+//                    EdgeProvider.getPendingSelfIntent(
+//                            context,
+//                            context.getString(R.string.SELECT_STOCK) + ":" + position)
+//            );
+//
+//            // Set border around active stock if reordering
+//            if (watchListManager.isReorderingStocks) {
+//                if (position == watchListManager.getActiveWatchList().getActiveStock()) {
+//                    stockLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
+//                }
+//            }
 
             return stockLayout;
         }

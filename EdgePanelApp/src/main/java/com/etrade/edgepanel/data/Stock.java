@@ -1,12 +1,5 @@
 package com.etrade.edgepanel.data;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.*;
-import java.io.*;
-import java.nio.charset.Charset;
-
 /**
  * Created by dpowell1 on 7/10/17.
  */

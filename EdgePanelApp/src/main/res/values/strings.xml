@@ -7,4 +7,14 @@
     <string name="description">Display watch lists in Edge panel</string>
     <string name="refresh_button">Refresh</string>
 
+    <string name="action_prefix">com.etrade.edgepanel.action.</string>
+    <string name="REFRESH">com.etrade.edgepanel.action.REFRESH</string>
+    <string name="SET_ACTIVE_WATCH_LIST">com.etrade.edgepanel.action.SET_ACTIVE_WATCH_LIST</string>
+    <string name="TOGGLE_SETTINGS">com.etrade.edgepanel.action.TOGGLE_SETTINGS</string>
+    <string name="REORDER_STOCKS">com.etrade.edgepanel.action.REORDER_STOCKS</string>
+    <string name="REORDER_WLS">com.etrade.edgepanel.action.REORDER_WLS</string>
+    <string name="SELECT_STOCK">com.etrade.edgepanel.action.SELECT_STOCK</string>
+    <string name="SWAP_STOCK_UP">com.etrade.edgepanel.action.SWAP_STOCK_UP</string>
+    <string name="SWAP_STOCK_DOWN">com.etrade.edgepanel.action.SWAP_STOCK_DOWN</string>
+
 </resources>

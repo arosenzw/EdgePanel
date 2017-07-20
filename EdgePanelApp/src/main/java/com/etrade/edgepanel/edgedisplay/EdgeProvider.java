@@ -1,7 +1,6 @@
 package com.etrade.edgepanel.edgedisplay;
 
 import com.etrade.edgepanel.R;
-import com.etrade.edgepanel.data.Stock;
 import com.etrade.edgepanel.data.WatchList;
 import com.etrade.edgepanel.data.WatchListManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
@@ -34,9 +33,7 @@ public class EdgeProvider extends SlookCocktailProvider {
     private static WatchListManager watchListManager = WatchListManager.getInstance();
     private static RemoteViews edgeView;
     private static RemoteViews menuView;
-    private static boolean displaySettings = false;
-    private static boolean isReorderingStocks = false;
-    private static boolean isReorderingWls = false;
+    public static boolean displaySettings = false;
 
     @Override
     public void onUpdate(Context context, SlookCocktailManager cocktailManager, int[] cocktailIds) {
@@ -146,7 +143,7 @@ public class EdgeProvider extends SlookCocktailProvider {
         toggleArrowButtons(context, false);
         menuView.setViewVisibility(R.id.settings_background, View.INVISIBLE);
         // Disable reordering ability
-        isReorderingStocks = isReorderingWls = false;
+        watchListManager.isReorderingStocks = watchListManager.isReorderingWls = false;
         watchListManager.getActiveWatchList().clearActiveStock();
     }
 
@@ -159,20 +156,6 @@ public class EdgeProvider extends SlookCocktailProvider {
         // ListView
         Intent lvIntent = new Intent(context, StockListService.class);
         edgeView.setRemoteAdapter(R.id.stock_list, lvIntent);
-
-//        // Set onclick to activate reordering; isReordering checked in onReceive
-//        listEntryLayout.setOnClickPendingIntent(
-//                R.id.stock,
-//                getPendingSelfIntent(context, SELECT_STOCK + ":" + i)
-//        );
-//
-//        // Set border around active stock if reordering
-//        if (isReorderingStocks) {
-//            if (i == watchListManager.getActiveWatchList().getActiveStock()) {
-//                listEntryLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
-//            }
-//        }
-
     }
 
     public String getDate() {
@@ -183,7 +166,7 @@ public class EdgeProvider extends SlookCocktailProvider {
         return strDate;
     }
 
-    protected PendingIntent getPendingSelfIntent(Context context, String action) {
+    public static PendingIntent getPendingSelfIntent(Context context, String action) {
         return getPendingSelfIntent(context, action, null);
     }
 
@@ -197,7 +180,7 @@ public class EdgeProvider extends SlookCocktailProvider {
      *          Extra key-values to be added to the intent
      * @return
      */
-    protected PendingIntent getPendingSelfIntent(Context context, String action, HashMap<String, String> extras) {
+    public static PendingIntent getPendingSelfIntent(Context context, String action, HashMap<String, String> extras) {
         Intent intent = new Intent(context, EdgeProvider.class);
         intent.setAction(action);
         if (extras != null) {
@@ -229,14 +212,14 @@ public class EdgeProvider extends SlookCocktailProvider {
         } else if (action.equals(TOGGLE_SETTINGS)) {
             displaySettings = !displaySettings;
         } else if (action.equals(REORDER_STOCKS)) {
-            isReorderingStocks = !isReorderingStocks;
-            isReorderingWls = false;
+            watchListManager.isReorderingStocks = !watchListManager.isReorderingStocks;
+            watchListManager.isReorderingWls = false;
         } else if (action.equals(REORDER_WLS)) {
-            isReorderingWls = !isReorderingWls;
-            isReorderingStocks = false;
+            watchListManager.isReorderingWls = !watchListManager.isReorderingWls;
+            watchListManager.isReorderingStocks = false;
             watchListManager.getActiveWatchList().clearActiveStock();
         } else if (action.contains(SELECT_STOCK)) {
-            if (isReorderingStocks) {
+            if (watchListManager.isReorderingStocks) {
                 int stockNum = Integer.parseInt(action.split(":")[1]);
                 WatchList watchList = watchListManager.getActiveWatchList();
                 if (stockNum != watchList.getActiveStock()) {

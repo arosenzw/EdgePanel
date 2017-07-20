@@ -7,6 +7,8 @@ package com.etrade.edgepanel.data;
 public class WatchListManager {
     private WatchList[] watch_lists;
     private int active;
+    public static boolean isReorderingStocks = false;
+    public static boolean isReorderingWls = false;
 
     private WatchListManager(WatchList[] watch_lists) {
         this.watch_lists = watch_lists;
