@@ -80,6 +80,7 @@ public class EdgeProvider extends SlookCocktailProvider {
      * @param context
      */
     private void setMainMenu(Context context) {
+        menuView.removeAllViews(R.id.lists);
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, getPendingSelfIntent(context, REFRESH));
         menuView.setOnClickPendingIntent(R.id.settings_button, getPendingSelfIntent(context, TOGGLE_SETTINGS));
