@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.etrade.edgepanel.EdgeActions;
 import com.etrade.edgepanel.R;
 import com.etrade.edgepanel.data.Stock;
 import com.etrade.edgepanel.data.WatchListManager;
@@ -77,7 +78,7 @@ public class StockListService extends RemoteViewsService {
 
             // Set individual item onClick events using fillInIntents
             Intent fillInIntent = new Intent();
-            fillInIntent.putExtra(EdgeProvider.SELECT_STOCK, position);  //specify which item was clicked
+            fillInIntent.putExtra(EdgeActions.SELECT_STOCK.toString(), position);  //specify which item was clicked
             stockLayout.setOnClickFillInIntent(R.id.stock, fillInIntent);
 
             // Set border around active stock if reordering

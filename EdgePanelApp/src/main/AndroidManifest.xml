@@ -29,7 +29,7 @@
             <!-- android:value="true" /> -->
         </activity>
 
-        <receiver android:name=".edgedisplay.EdgeProvider">
+        <receiver android:name=".edgedisplay.WidgetProvider">
             <intent-filter>
                 <action android:name="com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" />
                 <!--Below necessary for ListView in simulator-->
