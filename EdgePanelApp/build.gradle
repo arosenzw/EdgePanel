@@ -5,7 +5,7 @@ android {
         simulator {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
-            storeFile file('/Users/dpowell1/AndroidStudioProjects/EdgeScreen/sim_test.jks')
+            storeFile file("$rootDir/sim_test.jks")
             storePassword 'android'
         }
     }
