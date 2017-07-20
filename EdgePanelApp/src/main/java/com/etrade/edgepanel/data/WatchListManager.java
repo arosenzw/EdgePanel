@@ -40,14 +40,31 @@ public class WatchListManager {
         Stock s4 = new Stock("GOOGL", "Alphabet", 151.99, 5.00, 2.00);
         Stock s5 = new Stock("CSCO", "Cisco", 100.00, -2.00, -5.00);
         Stock s6 = new Stock("TSLA", "Tesla", 500.00, 3.15, 2.05);
+        Stock s7 = new Stock("BAC", "Bank of America", 23.92, -0.14, -0.58);
+        Stock s8 = new Stock("GE", "General Electric", 26.79, -0.15, -0.56);
+        Stock s9 = new Stock("F", "Ford Motor", 11.71, 0.03, 0.21);
+        Stock s10 = new Stock("TWTR", "Twitter", 20.60, 0.48, 2.39);
+        Stock s11 = new Stock("BABA", "Alibaba", 152.63, -0.52, -0.34);
+        Stock s12 = new Stock("SNAP", "Snapchat", 14.79, -0.18, -1.20);
+        Stock s13 = new Stock("GPRO", "GoPro", 8.10, 0.00, 0.00);
+        Stock s14 = new Stock("DIS", "Disney", 107.56, 0.73, 0.68);
+        Stock s15 = new Stock("SBUX", "Starbucks", 58.08, 0.01, 0.02);
+        Stock s16 = new Stock("FIT", "Fitbit", 5.81, 0.0402, 0.70);
 
-        Stock[] stocks1 = {s, s1, s2, s, s1, s2, s, s1, s2, s, s1, s2};
-        Stock[] stocks2 = {s3, s4, s5, s6};
+
+
+
+        Stock[] stocks1 = {s, s1, s2};
+        Stock[] stocks2 = {s3, s4, s5, s6, s14, s15, s16};
+        Stock[] stocks3 = {s4, s5, s6, s7, s8, s9, s10};
+        Stock[] stocks4 = {s11, s12, s13};
 
         WatchList w = new WatchList(stocks1);
         WatchList w2 = new WatchList(stocks2);
+        WatchList w3 = new WatchList(stocks3);
+        WatchList w4 = new WatchList(stocks4);
 
-        WatchList[] lists = {w, w2};
+        WatchList[] lists = {w, w2, w3, w4};
 
         return new WatchListManager(lists);
     }
