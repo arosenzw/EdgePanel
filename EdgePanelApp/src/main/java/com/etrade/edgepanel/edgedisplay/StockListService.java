@@ -53,11 +53,11 @@ public class StockListService extends RemoteViewsService {
 
             // Set background color to green, red, or gray
             int color = 0;
-            if (stock.getPercent_change() > 0.00) {
+            if (stock.getPercentChange() > 0.00) {
                 color = R.drawable.positive_gradient;
                 change += "+";
                 percentage += "+";
-            } else if (stock.getPercent_change() < 0.00) {
+            } else if (stock.getPercentChange() < 0.00) {
                 color = R.drawable.negative_gradient;
             } else {
                 color = R.drawable.neutral_gradient;
@@ -69,10 +69,10 @@ public class StockListService extends RemoteViewsService {
             // Set TextView to appropriate stock text
             stockLayout.setTextViewText(R.id.stock_ticker, stock.getTicker());
             stockLayout.setTextViewText(R.id.stock_name, stock.getName());
-            stockLayout.setTextViewText(R.id.stock_price, Double.toString(stock.getValue()));
-            change += String.format("%.2f", stock.getDollar_change());
+            stockLayout.setTextViewText(R.id.stock_price, Double.toString(stock.getDollarValue()));
+            change += String.format("%.2f", stock.getDollarChange());
             stockLayout.setTextViewText(R.id.stock_change, change);
-            percentage += String.format("%.2f", stock.getPercent_change());
+            percentage += String.format("%.2f", stock.getPercentChange());
             percentage += "%)";
             stockLayout.setTextViewText(R.id.stock_perc, percentage);
 
