@@ -27,6 +27,7 @@ public class WidgetProvider extends SlookCocktailProvider {
     private static WatchListManager watchListManager = WatchListManager.getInstance();
     private static RemoteViews edgeView;
     private static RemoteViews menuView;
+    private static EdgeProvider edgeProvider = new EdgeProvider();
     private static MenuProvider menuProvider = new MenuProvider();
     public static final int EDGE_PANEL_LAYOUT = R.layout.stock_list_layout;
     public static final int MENU_PANEL_LAYOUT = R.layout.menu_window;
@@ -49,32 +50,16 @@ public class WidgetProvider extends SlookCocktailProvider {
         // Left-hand side "help view" window layout
         menuView = new RemoteViews(context.getPackageName(), MENU_PANEL_LAYOUT);
 
+        // Update content of menu and edge panels
         menuProvider.updateMenuPanel(context, menuView, watchListManager);
-        updateEdgePanel(context);
-
-        // Update all widget items, including both the edge content and menu content
-
+        edgeProvider.updateEdgePanel(context, edgeView);
+        
+        // Redraw menu and edge panels
         if (cocktailIds != null) {
             for (int id : cocktailIds) {
                 mgr.updateCocktail(id, edgeView, menuView);
             }
         }
-    }
-
-    /**
-     * Updates the right-hand side edge panel containing stock information of a given watch list.
-     *
-     * @param context
-     */
-    private void updateEdgePanel(Context context) {
-        // Set up ListView
-        Intent populateIntent = new Intent(context, StockListService.class);
-        edgeView.setRemoteAdapter(R.id.stock_list, populateIntent);
-        // Set up general pending intent template that will capture all touches.
-        // StockListService.StockFactory will set individual fill-in-intents that
-        // specify what should be done on a per-list-item basis upon receipt of a
-        // touch from the general intent below
-        edgeView.setPendingIntentTemplate(R.id.stock_list, getPendingSelfIntent(context, EdgeActions.SELECT_STOCK));
     }
 
     public static String getDate() {
