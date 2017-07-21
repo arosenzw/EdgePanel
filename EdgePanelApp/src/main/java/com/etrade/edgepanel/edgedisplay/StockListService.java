@@ -87,7 +87,6 @@ public class StockListService extends RemoteViewsService {
                     stockLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
                 }
             }
-
             return stockLayout;
         }
 

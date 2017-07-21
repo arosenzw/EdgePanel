@@ -7,6 +7,7 @@ package com.etrade.edgepanel.data;
 public class WatchListManager {
     private WatchList[] watch_lists;
     private int active;
+    private int clicked; // for reordering
     public static boolean isReorderingStocks = false;
     public static boolean isReorderingWls = false;
 
@@ -15,9 +16,19 @@ public class WatchListManager {
         this.active = 0; //show first watch list in array
     }
 
+    public WatchList[] getWatchListArray() { return watch_lists; }
+
     public WatchList getActiveWatchList() {
         return watch_lists[active];
     }
+
+    public int getActive() { return active; }
+
+    public int getClicked() { return clicked; }
+
+    public void setClicked(int watchList) { clicked = watchList; }
+
+    public void clearClicked() { clicked = -1; }
 
     public int size() {
         return this.watch_lists.length;
@@ -59,14 +70,34 @@ public class WatchListManager {
         Stock[] stocks3 = {s4, s5, s6, s7, s8, s9, s10};
         Stock[] stocks4 = {s11, s12, s13};
 
-        WatchList w = new WatchList(stocks1);
-        WatchList w2 = new WatchList(stocks2);
-        WatchList w3 = new WatchList(stocks3);
-        WatchList w4 = new WatchList(stocks4);
+        WatchList w = new WatchList(stocks1, "Energy");
+        WatchList w2 = new WatchList(stocks2, "BioTech");
+        WatchList w3 = new WatchList(stocks3, "Long Term");
+        WatchList w4 = new WatchList(stocks4, "Options");
 
         WatchList[] lists = {w, w2, w3, w4};
 
         return new WatchListManager(lists);
+    }
+    public void swapWatchList(int watchList, int direction) {
+        if (watchList == 0 && direction < 0) {
+            return;
+        } else if (watchList == watch_lists.length-1 && direction > 0) {
+            return;
+        }
+
+        if (direction > 0) {
+            direction = 1;
+        } else if (direction < 0) {
+            direction = -1;
+        } else {
+            return;
+        }
+
+        WatchList w = watch_lists[watchList];
+        watch_lists[watchList] = watch_lists[watchList + direction];
+        watch_lists[watchList + direction] = w;
+        setClicked(watchList+direction);
     }
 
     private static class WatchListManagerSingleton {

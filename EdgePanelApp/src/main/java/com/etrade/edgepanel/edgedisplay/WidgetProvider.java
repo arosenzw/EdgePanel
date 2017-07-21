@@ -4,6 +4,7 @@ import com.etrade.edgepanel.EdgeActions;
 import com.etrade.edgepanel.R;
 import com.etrade.edgepanel.data.WatchList;
 import com.etrade.edgepanel.data.WatchListManager;
+import com.samsung.android.sdk.look.Slook;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
 
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import static com.etrade.edgepanel.EdgeActions.REFRESH;
 
 
 public class WidgetProvider extends SlookCocktailProvider {
@@ -50,6 +53,7 @@ public class WidgetProvider extends SlookCocktailProvider {
         updateEdgePanel(context);
 
         // Update all widget items, including both the edge content and menu content
+
         if (cocktailIds != null) {
             for (int id : cocktailIds) {
                 mgr.updateCocktail(id, edgeView, menuView);
@@ -121,22 +125,32 @@ public class WidgetProvider extends SlookCocktailProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         Log.d("onReceive: ", intent.getAction());
-
         String action = intent.getAction();
-        if (action.equals(EdgeActions.REFRESH.toString())) {
+
+        if (action.equals(REFRESH.toString())) {
+            updateEdge(context);
         } else if (action.contains(EdgeActions.SET_ACTIVE_WATCH_LIST.toString())) {
             // Get correct button
             int newActiveWatchList = Integer.parseInt(action.split(":")[1]);
-            watchListManager.setActive(newActiveWatchList);
+            if(watchListManager.getActive() != newActiveWatchList) {
+                watchListManager.setActive(newActiveWatchList);
+                updateEdge(context);
+            }
+            // else do not update screen
+
         } else if (action.equals(EdgeActions.TOGGLE_SETTINGS.toString())) {
             menuProvider.toggleDisplaySettings();
+            watchListManager.clearClicked();
+            updateEdge(context);
         } else if (action.equals(EdgeActions.REORDER_STOCKS.toString())) {
             watchListManager.isReorderingStocks = !watchListManager.isReorderingStocks;
             watchListManager.isReorderingWls = false;
+            updateEdge(context);
         } else if (action.equals(EdgeActions.REORDER_WLS.toString())) {
             watchListManager.isReorderingWls = !watchListManager.isReorderingWls;
             watchListManager.isReorderingStocks = false;
-            watchListManager.getActiveWatchList().clearActiveStock();
+            watchListManager.clearClicked();
+            updateEdge(context);
         } else if (action.contains(EdgeActions.SELECT_STOCK.toString())) {
             if (watchListManager.isReorderingStocks) {
                 int stockNum = intent.getIntExtra(EdgeActions.SELECT_STOCK.toString(), 0);
@@ -146,12 +160,26 @@ public class WidgetProvider extends SlookCocktailProvider {
                 } else {
                     watchList.clearActiveStock();
                 }
+                updateEdge(context);
+            }
+        } else if (action.contains(EdgeActions.SELECT_WL.toString())) {
+            if(watchListManager.isReorderingWls) {
+                int watchList = Integer.parseInt(action.split(":")[1]);
+                if(watchList != watchListManager.getClicked()) {
+                    watchListManager.setClicked(watchList);
+                } else {
+                    watchListManager.clearClicked();
+                }
+                updateEdge(context);
             }
         } else if (action.equals(EdgeActions.SWAP_STOCK_UP.toString()) || action.equals(EdgeActions.SWAP_STOCK_DOWN.toString())) {
             WatchList wl = watchListManager.getActiveWatchList();
             wl.swap(wl.getActiveStock(), (action.equals(EdgeActions.SWAP_STOCK_UP.toString()) ? -1 : 1));
+            updateEdge(context);
+        } else if(action.equals(EdgeActions.SWAP_WL_UP.toString()) || action.equals(EdgeActions.SWAP_WL_DOWN.toString())) {
+            watchListManager.swapWatchList(watchListManager.getClicked(), (action.equals(EdgeActions.SWAP_WL_UP.toString()) ? -1 : 1));
+            updateEdge(context);
         }
-        updateEdge(context);
     }
 
     public static void displayTextPopup(Context context, String text) {

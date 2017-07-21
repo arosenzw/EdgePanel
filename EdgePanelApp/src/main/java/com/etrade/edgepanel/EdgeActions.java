@@ -12,7 +12,11 @@ public enum EdgeActions {
     REORDER_WLS("REORDER_WLS"),
     SELECT_STOCK("SELECT_STOCK"),
     SWAP_STOCK_UP("SWAP_STOCK_UP"),
-    SWAP_STOCK_DOWN("SWAP_STOCK_DOWN");
+    SWAP_STOCK_DOWN("SWAP_STOCK_DOWN"),
+    SELECT_WL("SELECT_WL"),
+    SWAP_WL_UP("SWAP_WL_UP"),
+    SWAP_WL_DOWN("SWAP_WL_DOWN");
+
 
     private String action;
     private String prefix = "com.etrade.edgepanel.action.";

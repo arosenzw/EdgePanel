@@ -1,12 +1,17 @@
 package com.etrade.edgepanel.edgedisplay;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.etrade.edgepanel.EdgeActions;
 import com.etrade.edgepanel.R;
 import com.etrade.edgepanel.data.WatchListManager;
+
+import java.util.HashMap;
+
+import static com.etrade.edgepanel.edgedisplay.WidgetProvider.getPendingSelfIntent;
 
 /**
  * Created by dpowell1 on 7/20/17.
@@ -38,23 +43,30 @@ public class MenuProvider {
         menuView.removeAllViews(R.id.lists);     // clear menu before redrawing
         // Set button functionalities
         menuView.setOnClickPendingIntent(R.id.refresh_button, 
-            WidgetProvider.getPendingSelfIntent(context, EdgeActions.REFRESH));
-        menuView.setOnClickPendingIntent(R.id.settings_button, 
-            WidgetProvider.getPendingSelfIntent(context, EdgeActions.TOGGLE_SETTINGS));
+            getPendingSelfIntent(context, EdgeActions.REFRESH));
+        menuView.setOnClickPendingIntent(R.id.settings_button,
+            getPendingSelfIntent(context, EdgeActions.TOGGLE_SETTINGS));
+
 
         // Add current date
         menuView.setTextViewText(R.id.update_date, WidgetProvider.getDate());
-
         // Set available watch lists in menu
         for (int i = 0; i < watchListManager.size(); i++) {
             RemoteViews watchListEntry = new RemoteViews(context.getPackageName(), R.layout.watch_list_entry);
-            String text = "Watch List " + Integer.toString(i + 1);
+            String text = watchListManager.getWatchListArray()[i].getName();
             watchListEntry.setTextViewText(R.id.watch_list_button, text);
             menuView.addView(R.id.lists, watchListEntry);
-            watchListEntry.setOnClickPendingIntent(
-                    R.id.watch_list_button,
-                    WidgetProvider.getPendingSelfIntent(context, EdgeActions.SET_ACTIVE_WATCH_LIST.toString() + ":" + Integer.toString(i))
-            );
+
+            if(watchListManager.isReorderingWls) {
+                watchListEntry.setOnClickPendingIntent(R.id.watch_list_button, getPendingSelfIntent(context, EdgeActions.SELECT_WL.toString() + ":" + Integer.toString(i)));
+                if (watchListManager.getClicked() == i) {
+                    watchListEntry.setInt(R.id.watch_list_button, "setBackgroundResource", R.drawable.wl_border);
+                    watchListManager.setActive(i);
+                }
+            } else {
+                watchListEntry.setOnClickPendingIntent(R.id.watch_list_button, getPendingSelfIntent(context,
+                        EdgeActions.SET_ACTIVE_WATCH_LIST.toString() + ":" + Integer.toString(i)));
+            }
         }
     }
 
@@ -71,11 +83,13 @@ public class MenuProvider {
         // else
         menuView.setViewVisibility(R.id.settings_background, View.VISIBLE);
 
-        menuView.setOnClickPendingIntent(R.id.reorder_stocks, WidgetProvider.getPendingSelfIntent(context, EdgeActions.REORDER_STOCKS));
-        menuView.setOnClickPendingIntent(R.id.reorder_watch_lists, WidgetProvider.getPendingSelfIntent(context, EdgeActions.REORDER_WLS));
+        menuView.setOnClickPendingIntent(R.id.reorder_stocks, getPendingSelfIntent(context, EdgeActions.REORDER_STOCKS));
+        menuView.setOnClickPendingIntent(R.id.reorder_watch_lists, getPendingSelfIntent(context, EdgeActions.REORDER_WLS));
+
         // Set background to close settings menu upon click
-        menuView.setOnClickPendingIntent(R.id.settings_background, WidgetProvider.getPendingSelfIntent(context, EdgeActions.TOGGLE_SETTINGS));
-        toggleArrowButtons(context, (watchListManager.getActiveWatchList().getActiveStock() >= 0));
+
+        menuView.setOnClickPendingIntent(R.id.settings_background, getPendingSelfIntent(context, EdgeActions.TOGGLE_SETTINGS));
+        toggleArrowButtons(context, ((watchListManager.getActiveWatchList().getActiveStock() >= 0) || (watchListManager.getClicked()) >= 0));
     }
 
     /**
@@ -89,8 +103,13 @@ public class MenuProvider {
             menuView.setViewVisibility(R.id.reorder_buttons, View.INVISIBLE);
             menuView.setViewVisibility(R.id.arrow_buttons, View.VISIBLE);
             // Add button functionality
-            menuView.setOnClickPendingIntent(R.id.upBtn, WidgetProvider.getPendingSelfIntent(context, EdgeActions.SWAP_STOCK_UP));
-            menuView.setOnClickPendingIntent(R.id.downBtn, WidgetProvider.getPendingSelfIntent(context, EdgeActions.SWAP_STOCK_DOWN));
+            if(watchListManager.isReorderingStocks) {
+                menuView.setOnClickPendingIntent(R.id.upBtn, getPendingSelfIntent(context, EdgeActions.SWAP_STOCK_UP));
+                menuView.setOnClickPendingIntent(R.id.downBtn, getPendingSelfIntent(context, EdgeActions.SWAP_STOCK_DOWN));
+            } else if (watchListManager.isReorderingWls) {
+                menuView.setOnClickPendingIntent(R.id.upBtn, getPendingSelfIntent(context, EdgeActions.SWAP_WL_UP));
+                menuView.setOnClickPendingIntent(R.id.downBtn, getPendingSelfIntent(context, EdgeActions.SWAP_WL_DOWN));
+            }
         } else {
             menuView.setViewVisibility(R.id.reorder_buttons, View.VISIBLE);
             menuView.setViewVisibility(R.id.arrow_buttons, View.INVISIBLE);
@@ -101,6 +120,7 @@ public class MenuProvider {
      * Toggles whether or not the settings menu should be displayed
      */
     public void toggleDisplaySettings() {
+
         displaySettings = !displaySettings;
     }
 
@@ -116,6 +136,7 @@ public class MenuProvider {
         // Disable reordering ability
         watchListManager.isReorderingStocks = watchListManager.isReorderingWls = false;
         watchListManager.getActiveWatchList().clearActiveStock();
+        watchListManager.clearClicked();
     }
 
 }
