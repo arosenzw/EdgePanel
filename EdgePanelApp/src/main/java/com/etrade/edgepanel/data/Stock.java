@@ -53,7 +53,7 @@ public class Stock {
                 jo.get("data").getAsJsonObject().get("QuoteResponse").getAsJsonArray().get(0).getAsJsonObject();
         Log.d("JSON quote ticker", quote.get("symbol").toString() + "::" + quote.get("symbol").getAsString());
         String ticker = quote.get("symbol").getAsString();
-        String name = ticker;
+        String name = quote.get("symbolDescription").getAsString();
         double dollarValue = quote.get("lastPrice").getAsDouble();
         double dollarChange = quote.get("change").getAsDouble();
         double percChange = quote.get("percentChange").getAsDouble();
