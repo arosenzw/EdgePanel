@@ -3,6 +3,7 @@ package com.etrade.edgepanel.data;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -26,7 +27,15 @@ public class Stock {
             "?&EHFLAG=false&requireEarningsDate=true";
 
     public Stock(String ticker) {
+        this.ticker = ticker;
         pullStockInfo(ticker);
+    }
+
+    /**
+     * Refreshes the stock's information
+     */
+    public void update() {
+        pullStockInfo(getTicker());
     }
 
     /**
@@ -49,9 +58,13 @@ public class Stock {
      */
     private void parseResponse(String jsonString) {
         JsonObject jo = new JsonParser().parse(jsonString).getAsJsonObject();
+        if (isJsonError(jsonString)) {
+            // If error in getting stock, try again
+            pullStockInfo(getTicker());
+            return;
+        }
         JsonObject quote =
                 jo.get("data").getAsJsonObject().get("QuoteResponse").getAsJsonArray().get(0).getAsJsonObject();
-        Log.d("JSON quote ticker", quote.get("symbol").toString() + "::" + quote.get("symbol").getAsString());
         String ticker = quote.get("symbol").getAsString();
         String name = quote.get("symbolDescription").getAsString();
         double dollarValue = quote.get("lastPrice").getAsDouble();
@@ -60,8 +73,38 @@ public class Stock {
         double dollarChange = quote.get("change").getAsDouble();
         dollarChange = Double.valueOf(df.format(dollarChange));
         double percChange = quote.get("percentChange").getAsDouble();
-        Log.d("Json values:", ticker + ":" + name + ":" + dollarValue + ":" + dollarChange + ":" + percChange);
+        // Round values
+        dollarValue = ((double) Math.round(dollarValue * 100)) / 100;
+        dollarChange = ((double) Math.round(dollarChange * 100)) / 100;
+        percChange = ((double) Math.round(percChange * 100)) / 100;
+//        Log.d("Json values:", ticker + ":" + name + ":" + dollarValue + ":" + dollarChange + ":" + percChange);
         setDefaultValues(ticker, name, dollarValue, dollarChange, percChange);
+    }
+
+    /**
+     * Check if the E-Trade backend was unable to return stock data
+     *
+     * @param jsonString
+     *
+     * @return
+     */
+    private boolean isJsonError(String jsonString) {
+        JsonObject data = new JsonParser().parse(jsonString).getAsJsonObject().get("data").getAsJsonObject();
+        // If error message (== "Quote unavailable, try again in a few minutes")
+        JsonElement message = data.get("Messages");
+        if (message != null) {
+            JsonObject messageBody = data.get("Messages").getAsJsonArray().get(0).getAsJsonObject();
+            if (messageBody.get("type").getAsString().equals("ERROR")) {
+                Log.d("Stock data unavailable", getTicker() + ":" + message.toString());
+                return true;
+            }
+        }
+        // If QuoteResponse is empty
+        if (data.get("QuoteResponse").getAsJsonArray().size() == 0) {
+            Log.e("QuoteResponse null", getTicker());
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -129,14 +172,12 @@ public class Stock {
         @Override
         protected String doInBackground(String... params) {
             String urlPath = String.valueOf(params[0]);
-            Log.d("Url path", urlPath);
             StringBuffer jsonString = new StringBuffer();
             try {
                 URL url = new URL(urlPath);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                Log.d("Url requested",con.getURL().toString());
                 BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String line = "";
+                String line;
                 while ((line = br.readLine()) != null) {
                     jsonString.append(line);
                 }
