@@ -5,11 +5,11 @@ import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 
 /**
  * Created by dpowell1 on 7/10/17.
@@ -55,7 +55,10 @@ public class Stock {
         String ticker = quote.get("symbol").getAsString();
         String name = quote.get("symbolDescription").getAsString();
         double dollarValue = quote.get("lastPrice").getAsDouble();
+        DecimalFormat df = new DecimalFormat(("#.##"));
+        dollarValue = Double.valueOf(df.format(dollarValue));
         double dollarChange = quote.get("change").getAsDouble();
+        dollarChange = Double.valueOf(df.format(dollarChange));
         double percChange = quote.get("percentChange").getAsDouble();
         Log.d("Json values:", ticker + ":" + name + ":" + dollarValue + ":" + dollarChange + ":" + percChange);
         setDefaultValues(ticker, name, dollarValue, dollarChange, percChange);
