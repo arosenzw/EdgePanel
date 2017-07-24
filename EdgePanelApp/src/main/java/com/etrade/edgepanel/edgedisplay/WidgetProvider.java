@@ -4,7 +4,6 @@ import com.etrade.edgepanel.EdgeActions;
 import com.etrade.edgepanel.R;
 import com.etrade.edgepanel.data.WatchList;
 import com.etrade.edgepanel.data.WatchListManager;
-import com.samsung.android.sdk.look.Slook;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
 import com.samsung.android.sdk.look.cocktailbar.SlookCocktailProvider;
 

@@ -21,7 +21,6 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <!-- Required for Edge sub-window -->
@@ -33,6 +32,7 @@
         <receiver android:name=".edgedisplay.WidgetProvider">
             <intent-filter>
                 <action android:name="com.samsung.android.cocktail.v2.action.COCKTAIL_UPDATE" />
+                <action android:name="@string/REFRESH" />
                 <!--Below necessary for ListView in simulator-->
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>

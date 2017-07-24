@@ -1,7 +1,10 @@
 To do
-1) Pulling data from internet/app
+1) Pulling data from app
     How to get stock name?
     How to get watch lists?
 2) Caching data
     How do we cache data (particularly, a user's watch lists)?
     How do we notify the widget of a change in the user's watch lists?
+3) Update period
+    How often to update the app?
+    How to update only when screen on and widget active?
