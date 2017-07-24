@@ -44,33 +44,36 @@ public class WatchListManager {
 
     private static WatchListManager getTestWatchListManager() {
         // Sample stocks
-        Stock s = new Stock("aapl");
         Stock s1 = new Stock("FB");
         Stock s2 = new Stock("MSFT");
-        Stock s3 = new Stock("NFLX");
         Stock s4 = new Stock("GOOGL");
-        Stock s5 = new Stock("CSCO");
+        Stock s12 = new Stock("SNAP");
+        Stock s3 = new Stock("NFLX");
+
+        Stock s = new Stock("aapl");
         Stock s6 = new Stock("TSLA");
+        Stock s11 = new Stock("BABA");
+        Stock s17 = new Stock("AMZN");
+
+        Stock s5 = new Stock("CSCO");
         Stock s7 = new Stock("BAC");
         Stock s8 = new Stock("GE");
         Stock s9 = new Stock("F");
         Stock s10 = new Stock("TWTR");
-        Stock s11 = new Stock("BABA");
-        Stock s12 = new Stock("SNAP");
         Stock s13 = new Stock("GPRO");
         Stock s14 = new Stock("DIS");
         Stock s15 = new Stock("SBUX");
         Stock s16 = new Stock("FIT");
 
-        Stock[] stocks1 = {s, s3, s2};
-        Stock[] stocks2 = {s1, s4, s5, s6, s14, s15, s16};
-        Stock[] stocks3 = {s4, s5, s6, s7, s8, s9, s10};
-        Stock[] stocks4 = {s11, s12, s13};
+        Stock[] stocks1 = {s, s1, s2, s3, s4, s12, s13};
+        Stock[] stocks2 = {s, s6, s11, s17};
+        Stock[] stocks3 = {s5, s7, s8, s9, s10};
+        Stock[] stocks4 = {s14, s15, s16};
 
-        WatchList w = new WatchList(stocks1, "Energy");
-        WatchList w2 = new WatchList(stocks2, "BioTech");
-        WatchList w3 = new WatchList(stocks3, "Long Term");
-        WatchList w4 = new WatchList(stocks4, "Options");
+        WatchList w = new WatchList(stocks1, "Watch List 1");
+        WatchList w2 = new WatchList(stocks2, "Watch List 2");
+        WatchList w3 = new WatchList(stocks3, "Watch List 3");
+        WatchList w4 = new WatchList(stocks4, "Watch List 4");
 
         WatchList[] lists = {w, w2, w3, w4};
 
