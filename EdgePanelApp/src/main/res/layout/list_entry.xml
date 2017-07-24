@@ -23,6 +23,7 @@
             android:gravity="left|center"
             android:text="TextView"
             android:textAllCaps="true"
+            android:textColor="@android:color/white"
             android:textSize="20dp" />
 
         <TextView
@@ -31,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/default_panel_icon_padding"
             android:gravity="left"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/stock_price"
@@ -40,6 +42,7 @@
             android:layout_marginRight="@dimen/default_panel_icon_padding"
             android:gravity="right"
             android:text="TextView"
+            android:textColor="@android:color/white"
             android:textSize="20dp" />
 
         <TextView
@@ -49,6 +52,7 @@
             android:layout_marginRight="@dimen/default_panel_icon_padding"
             android:gravity="right"
             android:text="TextView"
+            android:textColor="@android:color/white"
             android:textSize="20dp" />
 
         <TextView
@@ -59,6 +63,7 @@
             android:layout_marginRight="@dimen/default_panel_icon_padding"
             android:gravity="right"
             android:text="TextView"
+            android:textColor="@android:color/white"
             android:textSize="20dp" />
     </LinearLayout>
 </LinearLayout>
