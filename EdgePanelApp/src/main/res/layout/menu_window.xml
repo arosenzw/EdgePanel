@@ -54,36 +54,6 @@
             android:importantForAccessibility="2"
             android:orientation="vertical"></LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/settings_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:visibility="invisible">
-
-            <RelativeLayout
-                android:id="@+id/settings_wrapper"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="60dp"
-                android:layout_marginRight="30dp">
-
-                <include layout="@layout/settings_layout" />
-            </RelativeLayout>
-
-        </RelativeLayout>
-
     </LinearLayout>
 
-    <Button
-        android:id="@+id/settings_button"
-        android:layout_width="43dp"
-        android:layout_height="43dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/item_margin"
-        android:layout_marginBottom="@dimen/item_margin"
-        android:background="@drawable/settings_icon"/>
 </RelativeLayout>

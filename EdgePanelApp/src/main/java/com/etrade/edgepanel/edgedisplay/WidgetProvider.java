@@ -123,7 +123,6 @@ public class WidgetProvider extends SlookCocktailProvider {
             // else do not update screen
 
         } else if (action.equals(EdgeActions.TOGGLE_SETTINGS.toString())) {
-            menuProvider.toggleDisplaySettings();
             watchListManager.clearClicked();
             watchListManager.isReorderingWls = watchListManager.isReorderingStocks = false;
             updateEdge(context);
@@ -147,7 +146,6 @@ public class WidgetProvider extends SlookCocktailProvider {
                 }
                 updateEdge(context);
             } else if (watchListManager.isReorderingWls) {
-                menuProvider.toggleDisplaySettings();
                 watchListManager.clearClicked();
                 watchListManager.isReorderingWls = false;
                 updateEdge(context);
