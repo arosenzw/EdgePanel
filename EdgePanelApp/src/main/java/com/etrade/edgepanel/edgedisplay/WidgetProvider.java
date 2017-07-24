@@ -121,48 +121,8 @@ public class WidgetProvider extends SlookCocktailProvider {
                 updateEdge(context);
             }
             // else do not update screen
-
-        } else if (action.equals(EdgeActions.TOGGLE_SETTINGS.toString())) {
-            watchListManager.clearClicked();
-            watchListManager.isReorderingWls = watchListManager.isReorderingStocks = false;
-            updateEdge(context);
-        } else if (action.equals(EdgeActions.REORDER_STOCKS.toString())) {
-            watchListManager.isReorderingStocks = !watchListManager.isReorderingStocks;
-            watchListManager.isReorderingWls = false;
-            updateEdge(context);
-        } else if (action.equals(EdgeActions.REORDER_WLS.toString())) {
-            watchListManager.isReorderingWls = !watchListManager.isReorderingWls;
-            watchListManager.isReorderingStocks = false;
-            watchListManager.clearClicked();
-            updateEdge(context);
         } else if (action.contains(EdgeActions.SELECT_STOCK.toString())) {
-            if (watchListManager.isReorderingStocks) {
-                int stockNum = intent.getIntExtra(EdgeActions.SELECT_STOCK.toString(), 0);
-                WatchList watchList = watchListManager.getActiveWatchList();
-                if (stockNum != watchList.getActiveStock()) {
-                    watchList.setActiveStock(stockNum);
-                } else {
-                    watchList.clearActiveStock();
-                }
-                updateEdge(context);
-            } else if (watchListManager.isReorderingWls) {
-                watchListManager.clearClicked();
-                watchListManager.isReorderingWls = false;
-                updateEdge(context);
-            }
-        } else if (action.contains(EdgeActions.SELECT_WL.toString())) {
-            if(watchListManager.isReorderingWls) {
-                int watchList = Integer.parseInt(action.split(":")[1]);
-                watchListManager.setClicked(watchList);
-                updateEdge(context);
-            }
-        } else if (action.equals(EdgeActions.SWAP_STOCK_UP.toString()) || action.equals(EdgeActions.SWAP_STOCK_DOWN.toString())) {
-            WatchList wl = watchListManager.getActiveWatchList();
-            wl.swap(wl.getActiveStock(), (action.equals(EdgeActions.SWAP_STOCK_UP.toString()) ? -1 : 1));
-            updateEdge(context);
-        } else if(action.equals(EdgeActions.SWAP_WL_UP.toString()) || action.equals(EdgeActions.SWAP_WL_DOWN.toString())) {
-            watchListManager.swapWatchList(watchListManager.getClicked(), (action.equals(EdgeActions.SWAP_WL_UP.toString()) ? -1 : 1));
-            updateEdge(context);
+
         }
     }
 

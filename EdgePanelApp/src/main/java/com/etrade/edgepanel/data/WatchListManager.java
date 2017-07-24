@@ -79,26 +79,6 @@ public class WatchListManager {
 
         return new WatchListManager(lists);
     }
-    public void swapWatchList(int watchList, int direction) {
-        if (watchList == 0 && direction < 0) {
-            return;
-        } else if (watchList == watch_lists.length-1 && direction > 0) {
-            return;
-        }
-
-        if (direction > 0) {
-            direction = 1;
-        } else if (direction < 0) {
-            direction = -1;
-        } else {
-            return;
-        }
-
-        WatchList w = watch_lists[watchList];
-        watch_lists[watchList] = watch_lists[watchList + direction];
-        watch_lists[watchList + direction] = w;
-        setClicked(watchList+direction);
-    }
 
     private static class WatchListManagerSingleton {
         private static final WatchListManager instance = WatchListManager.getTestWatchListManager();
