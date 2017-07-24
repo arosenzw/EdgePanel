@@ -1,10 +1,18 @@
 To do
-1) Pulling data from app
+1) Link to mobile_app and pull data from app
     How to get stock name?
     How to get watch lists?
+    Make clicking title bar in edge panel open app
 2) Caching data
-    How do we cache data (particularly, a user's watch lists)?
-    How do we notify the widget of a change in the user's watch lists?
+    How do we cache data (WL's and stock data (for lack of internet connection))?
+    How do we notify the widget of a change in the user's watch lists? (might be solved)
 3) Update period
     How often to update the app?
     How to update only when screen on and widget active?
+4) Deployment issues
+    Checking if edge is available on the device
+    Checking if there's internet connection
+    (The internet connection will also be related to caching WL's/stock information)
+5) Improve reordering system
+    Save scroll position
+    Change swap feature to drag-and-drop
