@@ -147,6 +147,11 @@ public class WidgetProvider extends SlookCocktailProvider {
                     watchList.clearActiveStock();
                 }
                 updateEdge(context);
+            } else if (watchListManager.isReorderingWls) {
+                menuProvider.toggleDisplaySettings();
+                watchListManager.clearClicked();
+                watchListManager.isReorderingWls = false;
+                updateEdge(context);
             }
         } else if (action.contains(EdgeActions.SELECT_WL.toString())) {
             if(watchListManager.isReorderingWls) {
