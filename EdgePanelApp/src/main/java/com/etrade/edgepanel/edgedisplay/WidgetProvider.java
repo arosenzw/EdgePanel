@@ -156,11 +156,7 @@ public class WidgetProvider extends SlookCocktailProvider {
         } else if (action.contains(EdgeActions.SELECT_WL.toString())) {
             if(watchListManager.isReorderingWls) {
                 int watchList = Integer.parseInt(action.split(":")[1]);
-                if(watchList != watchListManager.getClicked()) {
-                    watchListManager.setClicked(watchList);
-                } else {
-                    watchListManager.clearClicked();
-                }
+                watchListManager.setClicked(watchList);
                 updateEdge(context);
             }
         } else if (action.equals(EdgeActions.SWAP_STOCK_UP.toString()) || action.equals(EdgeActions.SWAP_STOCK_DOWN.toString())) {
