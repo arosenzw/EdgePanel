@@ -7,12 +7,14 @@ To do
     How do we cache data (WL's and stock data (for lack of internet connection))?
     How do we notify the widget of a change in the user's watch lists? (might be solved)
 3) Update period
-    How often to update the app?
+    Add disclaimer saying the stocks are up to 15 minutes delayed
+    Update whenever user opens the panel
+    Update whenever there is a change in the main app
     How to update only when screen on and widget active?
 4) Deployment issues
     Checking if edge is available on the device
     Checking if there's internet connection
     (The internet connection will also be related to caching WL's/stock information)
-5) Improve reordering system
-    Save scroll position
-    Change swap feature to drag-and-drop
+5) UI
+    Image is squashed
+    Update UI to be pixel-perfect
