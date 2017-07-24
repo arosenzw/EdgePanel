@@ -69,7 +69,7 @@ public class StockListService extends RemoteViewsService {
             // Set TextView to appropriate stock text
             stockLayout.setTextViewText(R.id.stock_ticker, stock.getTicker());
             stockLayout.setTextViewText(R.id.stock_name, stock.getName());
-            stockLayout.setTextViewText(R.id.stock_price, Double.toString(stock.getDollarValue()));
+            stockLayout.setTextViewText(R.id.stock_price, String.format("%.2f", stock.getDollarValue()));
             change += String.format("%.2f", stock.getDollarChange());
             stockLayout.setTextViewText(R.id.stock_change, change);
             percentage += String.format("%.2f", stock.getPercentChange());
