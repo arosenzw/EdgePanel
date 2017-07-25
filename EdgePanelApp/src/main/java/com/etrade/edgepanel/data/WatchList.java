@@ -41,13 +41,8 @@ public class WatchList {
         return stocks[pos];
     }
 
+
     private void updateStock(int pos) {
         stocks[pos].update();
-    }
-
-    private void updateStocks() {
-        for (Stock s : stocks) {
-            s.update();
-        }
     }
 }

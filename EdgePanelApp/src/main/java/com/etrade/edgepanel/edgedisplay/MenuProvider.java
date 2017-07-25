@@ -53,17 +53,8 @@ public class MenuProvider {
             String text = watchListManager.getWatchListArray()[i].getName();
             watchListEntry.setTextViewText(R.id.watch_list_button, text);
             menuView.addView(R.id.lists, watchListEntry);
-
-            if(watchListManager.isReorderingWls) {
-                watchListEntry.setOnClickPendingIntent(R.id.watch_list_button, getPendingSelfIntent(context, EdgeActions.SELECT_WL.toString() + ":" + Integer.toString(i)));
-                if (watchListManager.getClicked() == i) {
-                    watchListEntry.setInt(R.id.watch_list_button, "setBackgroundResource", R.drawable.wl_border);
-                    watchListManager.setActive(i);
-                }
-            } else {
-                watchListEntry.setOnClickPendingIntent(R.id.watch_list_button, getPendingSelfIntent(context,
+            watchListEntry.setOnClickPendingIntent(R.id.watch_list_button, getPendingSelfIntent(context,
                         EdgeActions.SET_ACTIVE_WATCH_LIST.toString() + ":" + Integer.toString(i)));
-            }
         }
     }
 

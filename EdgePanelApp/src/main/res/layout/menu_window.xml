@@ -19,17 +19,18 @@
                 android:id="@+id/update_date"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="0.91"
                 android:gravity="center"
                 android:text="TextView"
                 android:textAlignment="center" />
 
             <Button
                 android:id="@+id/refresh_button"
-                android:layout_width="43dp"
-                android:layout_height="match_parent"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:layout_gravity="right"
                 android:layout_marginRight="@dimen/item_margin"
+                android:layout_weight="0.00"
                 android:alpha="0.75"
                 android:background="@android:drawable/ic_popup_sync"
                 android:gravity="center"

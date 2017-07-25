@@ -5,7 +5,7 @@ package com.etrade.edgepanel.data;
  */
 
 public class WatchListManager {
-    private WatchList[] watch_lists;
+    private static WatchList[] watch_lists;
     private int active;
     private int clicked; // for reordering
     public static boolean isReorderingStocks = false;
@@ -23,12 +23,6 @@ public class WatchListManager {
     }
 
     public int getActive() { return active; }
-
-    public int getClicked() { return clicked; }
-
-    public void setClicked(int watchList) { clicked = watchList; }
-
-    public void clearClicked() { clicked = -1; }
 
     public int size() {
         return this.watch_lists.length;
@@ -79,6 +73,7 @@ public class WatchListManager {
 
         return new WatchListManager(lists);
     }
+
 
     private static class WatchListManagerSingleton {
         private static final WatchListManager instance = WatchListManager.getTestWatchListManager();

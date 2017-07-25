@@ -48,45 +48,45 @@ public class StockListService extends RemoteViewsService {
             RemoteViews stockLayout = new RemoteViews(getPackageName(), R.layout.list_entry);
             Stock stock = watchListManager.getActiveWatchList().getStock(position);
 
-            String change = "";
-            String percentage = "(";
+                String change = "";
+                String percentage = "(";
 
-            // Set background color to green, red, or gray
-            int color = 0;
-            if (stock.getPercentChange() > 0.00) {
-                color = R.drawable.positive_gradient;
-                change += "+";
-                percentage += "+";
-            } else if (stock.getPercentChange() < 0.00) {
-                color = R.drawable.negative_gradient;
-            } else {
-                color = R.drawable.neutral_gradient;
-            }
-
-            stockLayout.setInt(R.id.stock, "setBackgroundResource", color);
-            stockLayout.setInt(R.id.stock_border, "setBackgroundResource", color);
-
-            // Set TextView to appropriate stock text
-            stockLayout.setTextViewText(R.id.stock_ticker, stock.getTicker());
-            stockLayout.setTextViewText(R.id.stock_name, stock.getName());
-            stockLayout.setTextViewText(R.id.stock_price, String.format("%.2f", stock.getDollarValue()));
-            change += String.format("%.2f", stock.getDollarChange());
-            stockLayout.setTextViewText(R.id.stock_change, change);
-            percentage += String.format("%.2f", stock.getPercentChange());
-            percentage += "%)";
-            stockLayout.setTextViewText(R.id.stock_perc, percentage);
-
-            // Set individual item onClick events using fillInIntents
-            Intent fillInIntent = new Intent();
-            fillInIntent.putExtra(EdgeActions.SELECT_STOCK.toString(), position);  //specify which item was clicked
-            stockLayout.setOnClickFillInIntent(R.id.stock, fillInIntent);
-
-            // Set border around active stock if reordering
-            if (watchListManager.isReorderingStocks) {
-                if (position == watchListManager.getActiveWatchList().getActiveStock()) {
-                    stockLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
+                // Set background color to green, red, or gray
+                int color = 0;
+                if (stock.getPercentChange() > 0.00) {
+                    color = R.drawable.positive_gradient;
+                    change += "+";
+                    percentage += "+";
+                } else if (stock.getPercentChange() < 0.00) {
+                    color = R.drawable.negative_gradient;
+                } else {
+                    color = R.drawable.neutral_gradient;
                 }
-            }
+
+                stockLayout.setInt(R.id.stock, "setBackgroundResource", color);
+                stockLayout.setInt(R.id.stock_border, "setBackgroundResource", color);
+
+                // Set TextView to appropriate stock text
+                stockLayout.setTextViewText(R.id.stock_ticker, stock.getTicker());
+                stockLayout.setTextViewText(R.id.stock_name, stock.getName());
+                stockLayout.setTextViewText(R.id.stock_price, String.format("%.2f", stock.getDollarValue()));
+                change += String.format("%.2f", stock.getDollarChange());
+                stockLayout.setTextViewText(R.id.stock_change, change);
+                percentage += String.format("%.2f", stock.getPercentChange());
+                percentage += "%)";
+                stockLayout.setTextViewText(R.id.stock_perc, percentage);
+
+                // Set individual item onClick events using fillInIntents
+                Intent fillInIntent = new Intent();
+                fillInIntent.putExtra(EdgeActions.SELECT_STOCK.toString(), position);  //specify which item was clicked
+                stockLayout.setOnClickFillInIntent(R.id.stock, fillInIntent);
+
+                // Set border around active stock if reordering
+                if (watchListManager.isReorderingStocks) {
+                    if (position == watchListManager.getActiveWatchList().getActiveStock()) {
+                        stockLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
+                    }
+                }
             return stockLayout;
         }
 
