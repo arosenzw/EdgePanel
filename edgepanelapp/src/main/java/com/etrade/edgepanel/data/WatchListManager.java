@@ -11,7 +11,7 @@ public class WatchListManager {
     public static boolean isReorderingStocks = false;
     public static boolean isReorderingWls = false;
 
-    private WatchListManager(WatchList[] watch_lists) {
+    public WatchListManager(WatchList[] watch_lists) {
         this.watch_lists = watch_lists;
         this.active = 0; //show first watch list in array
     }

@@ -80,13 +80,6 @@ public class StockListService extends RemoteViewsService {
                 Intent fillInIntent = new Intent();
                 fillInIntent.putExtra(EdgeActions.SELECT_STOCK.toString(), position);  //specify which item was clicked
                 stockLayout.setOnClickFillInIntent(R.id.stock, fillInIntent);
-
-                // Set border around active stock if reordering
-                if (watchListManager.isReorderingStocks) {
-                    if (position == watchListManager.getActiveWatchList().getActiveStock()) {
-                        stockLayout.setInt(R.id.stock_border, "setBackgroundResource", R.color.selected_border);
-                    }
-                }
             return stockLayout;
         }
 

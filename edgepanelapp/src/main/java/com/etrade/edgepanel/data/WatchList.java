@@ -7,7 +7,6 @@ package com.etrade.edgepanel.data;
 public class WatchList {
     private Stock[] stocks;
     private String name;
-    private int activeStock;    // stock selected for reordering
 
     public WatchList(Stock[] s, String name_in) {
         stocks = s;
@@ -22,18 +21,6 @@ public class WatchList {
 
     public int size() {
         return stocks.length;
-    }
-
-    public int getActiveStock() {
-        return activeStock;
-    }
-
-    public void setActiveStock(int i) {
-        activeStock = i;
-    }
-
-    public void clearActiveStock() {
-        activeStock = -1;
     }
 
     public Stock getStock(int pos) {
