@@ -11,6 +11,7 @@ To do
     Update whenever user opens the panel
     Update whenever there is a change in the main app
     How to update only when screen on and widget active?
+    ListView should maintain scroll position upon update
 4) Deployment issues
     Checking if edge is available on the device
     Checking if there's internet connection
