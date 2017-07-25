@@ -1,12 +1,13 @@
+package data;
+
 /**
  * Created by arosenzw on 7/25/17.
  */
+
 import com.etrade.edgepanel.data.Stock;
 import com.etrade.edgepanel.data.WatchList;
 import com.etrade.edgepanel.data.WatchListManager;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
