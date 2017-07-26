@@ -1,11 +1,13 @@
 package com.etrade.edgepanel.edgedisplay;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.etrade.edgepanel.EdgeActions;
 import com.etrade.edgepanel.R;
+import com.samsung.android.sdk.look.cocktailbar.SlookCocktailManager;
 
 /**
  * Created by dpowell1 on 7/21/17.

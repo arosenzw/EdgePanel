@@ -23,7 +23,7 @@ public class StockListService extends RemoteViewsService {
         private Context context;
         private final String TAG = StockFactory.class.getSimpleName();
 
-        public StockFactory(Context context, WatchListManager watchListManager) {
+        private StockFactory(Context context, WatchListManager watchListManager) {
             this.context = context;
             this.watchListManager = watchListManager;
         }

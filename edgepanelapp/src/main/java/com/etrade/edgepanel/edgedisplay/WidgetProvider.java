@@ -31,6 +31,7 @@ public class WidgetProvider extends SlookCocktailProvider {
     public static final int EDGE_PANEL_LAYOUT = R.layout.stock_list_layout;
     public static final int MENU_PANEL_LAYOUT = R.layout.menu_window;
 
+
     @Override
     public void onUpdate(Context context, SlookCocktailManager cocktailManager, int[] cocktailIds) {
         updateEdge(context);
@@ -46,16 +47,12 @@ public class WidgetProvider extends SlookCocktailProvider {
         int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, WidgetProvider.class));
         // Right-hand side "panel view" window layout
         edgeView = new RemoteViews(context.getPackageName(), EDGE_PANEL_LAYOUT);
+        edgeProvider.updateEdgePanel(context, edgeView);
         // Left-hand side "help view" window layout
         menuView = new RemoteViews(context.getPackageName(), MENU_PANEL_LAYOUT);
-
-        // Update content of menu and edge panels
         menuProvider.updateMenuPanel(context, menuView, watchListManager);
-        edgeProvider.updateEdgePanel(context, edgeView);
-        
-        // Redraw menu and edge panels
-        if (cocktailIds != null) {
-            for (int id : cocktailIds) {
+        if(cocktailIds != null) {
+            for(int id : cocktailIds) {
                 mgr.updateCocktail(id, edgeView, menuView);
             }
         }
@@ -112,7 +109,13 @@ public class WidgetProvider extends SlookCocktailProvider {
         String action = intent.getAction();
 
         if (action.equals(REFRESH.toString())) {
-            updateEdge(context);
+            SlookCocktailManager mgr = SlookCocktailManager.getInstance(context);
+            int[] cocktailIds = mgr.getCocktailIds(new ComponentName(context, WidgetProvider.class));
+            menuView = new RemoteViews(context.getPackageName(), MENU_PANEL_LAYOUT);
+            menuProvider.updateMenuPanel(context, menuView, watchListManager);
+            mgr.notifyCocktailViewDataChanged(cocktailIds[0], R.id.stock_list);
+
+
         } else if (action.contains(EdgeActions.SET_ACTIVE_WATCH_LIST.toString())) {
             // Get correct button
             int newActiveWatchList = Integer.parseInt(action.split(":")[1]);
