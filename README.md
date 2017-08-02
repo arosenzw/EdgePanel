@@ -93,9 +93,9 @@ For an application that uses ListViews (such as this one), you'll also have to d
     android:exported="true"
     android:permission="android.permission.BIND_REMOTEVIEWS" />
 ```
-7. Add the sim_test.jks file to your project directory
-8. Run the following command: `adb shell appwidget grantbind --package com.samsung.android.cocktailbar --user 0`
-9. Sign the project with the following credentials:
+8. Add the sim_test.jks file to your project directory
+9. Run the following command: `adb shell appwidget grantbind --package com.samsung.android.cocktailbar --user 0`
+10. Sign the project with the following credentials:
    * Key Alias: androiddebugkey
    * Key Password: android
    * Store File: sim_test.jks
