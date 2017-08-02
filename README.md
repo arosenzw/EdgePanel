@@ -86,6 +86,13 @@ For an application that uses ListViews (such as this one), you'll also have to d
     <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
 </intent-filter>
 ```
+7. Remember to declare your services, e.g.
+```
+<service
+    android:name="com.example.ListService"
+    android:exported="true"
+    android:permission="android.permission.BIND_REMOTEVIEWS" />
+```
 7. Add the sim_test.jks file to your project directory
 8. Run the following command: `adb shell appwidget grantbind --package com.samsung.android.cocktailbar --user 0`
 9. Sign the project with the following credentials:
@@ -98,4 +105,4 @@ For an application that uses ListViews (such as this one), you'll also have to d
 Simply remove everything related to the simulator, including the signing key. Make sure you reset the dependency to slook.jar instead of edge_simulator.jar
 
 ### Resources
-More details can be found (here)[http://developer.samsung.com/galaxy/edge], including the jar files and the guides for (general edge programming)[http://developer.samsung.com/galaxy/edge/edge-guide] and for the (simulator)[http://developer.samsung.com/galaxy/edge/how-to-use-edge-simulator].
+More details can be found [here](http://developer.samsung.com/galaxy/edge), including the jar files and the guides for [general edge programming](http://developer.samsung.com/galaxy/edge/edge-guide) and for the [simulator](http://developer.samsung.com/galaxy/edge/how-to-use-edge-simulator).
