@@ -96,3 +96,6 @@ For an application that uses ListViews (such as this one), you'll also have to d
 
 ## In order to run on Edge phone
 Simply remove everything related to the simulator, including the signing key. Make sure you reset the dependency to slook.jar instead of edge_simulator.jar
+
+### Resources
+More details can be found (here)[http://developer.samsung.com/galaxy/edge], including the jar files and the guides for (general edge programming)[http://developer.samsung.com/galaxy/edge/edge-guide] and for the (simulator)[http://developer.samsung.com/galaxy/edge/how-to-use-edge-simulator].
