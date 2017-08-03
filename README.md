@@ -17,6 +17,8 @@ Preliminary code for the Edge app
         android:resource="@xml/edgepanel_cocktail_config" />
 </receiver>
 
+<!--Only include the tag below if the app is a standalone app in the Galaxy Store.
+    For us, since this app is to be integrated into an existing application, we don't include it-->
 <meta-data
     android:name="com.samsung.android.cocktail.mode"
     android:value="edge_single_plus" /> <!--Specific to single plus mode-->
